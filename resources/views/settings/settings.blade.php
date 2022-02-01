@@ -49,7 +49,7 @@
                 <div class="mb-3">
                     <label for="app_logo" class="text-sm font-medium text-gray-900 block dark:text-gray-300 my-2">{{ __('Logo') }}</label>
                     @if (array_key_exists('app_logo', $settings))  
-                        <img class="h-28 my-2" src="{{ Storage::url('images/').$settings['app_logo'] }}" />
+                        <img class="h-28 my-2" src="{{ Storage::url($settings['app_logo']) }}" />
                     @endif
                     <input 
                         type="file"
