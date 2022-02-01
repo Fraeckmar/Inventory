@@ -26,7 +26,7 @@ class Settings extends Controller
             $request->validate([
                 'app_logo' => 'mimes:jpg,png,jpeg|max:1054'
             ]);
-            $fileName = 'logo.'.$request->app_logo->extension(); 
+            $fileName = 'logo-'.time().'.'.$request->app_logo->extension(); 
             //$request->app_logo->storeAs('images', $fileName);
             $request->app_logo->storeAs('images', $fileName, 'public');
             $this->settings->put('app_logo', $fileName);
