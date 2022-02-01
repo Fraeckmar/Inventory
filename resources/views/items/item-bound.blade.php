@@ -51,7 +51,7 @@
 				<div class="mb-4">
 					<label for="customer" class="text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">{{ __('Customer') }}</label>
 					<select name="customer" class="block border border-grey-light w-full p-3 rounded mb-4">
-						<option>{{ __('Choose..') }}</option>
+						<option value="">{{ __('Choose..') }}</option>
 						@foreach ($customers as $customer )
 							<option value="{{ $customer->id }}">{{ $customer->name }}</option>
 						@endforeach					
