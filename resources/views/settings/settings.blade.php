@@ -55,7 +55,7 @@
                         type="file"
                         name="app_logo" 
                         id="app_logo" 
-                        class="bg-gray-50 border border-gray-300 sm:text-sm rounded-md p-2.5">
+                        class="bg-gray-50 border border-gray-300 sm:text-sm rounded-md w-full p-2.5">
                 </div>
             </div>
         </div>

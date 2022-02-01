@@ -3,8 +3,8 @@
 @php
     //dd($history);
 @endphp
-<section class="container mx-auto p-6">
-	<div class="w-full mb-8 overflow-hidden rounded-lg shadow-lg">
+<section class="container mx-auto sm:p-6">
+	<div class="w-full mb-8 overflow-auto rounded-lg shadow-lg">
 		<div class="w-full">
             <table class="w-full">
             <thead>
@@ -30,7 +30,7 @@
 	</div>
     {{-- INBOUND --}}
     <h3 class="uppercase text-xl font-semibold mb-4">{{ __('Inbound') }}</h3>
-    <div class="w-full mb-8 overflow-hidden rounded-lg shadow-lg">
+    <div class="w-full mb-8 overflow-auto rounded-lg shadow-lg">
 		<div class="w-full">            
             <table class="w-full">
                 <thead>
@@ -64,7 +64,7 @@
 	</div>
     {{-- OUTBOUND --}}
     <h3 class="uppercase text-xl font-semibold mb-4">{{ __('Outbound') }}</h3>
-    <div class="w-full mb-8 overflow-hidden rounded-lg shadow-lg">
+    <div class="w-full mb-8 overflow-auto rounded-lg shadow-lg">
 		<div class="w-full">            
             <table class="w-full">
                 <thead>

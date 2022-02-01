@@ -11,6 +11,7 @@
 
     {{-- Fav Icon --}}
     <link rel="shortcut icon" href="{{ asset('img/logo.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset('img/logo.png') }}">
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>

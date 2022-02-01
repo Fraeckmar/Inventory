@@ -34,7 +34,7 @@
 									<i class="fas fa-edit text-lg transition-colors duration-150 text-blue-500 hover:text-blue-600"></i>
 								</span>
 							</a>
-			            	<a href="{{ url('items/'.$item["id"]) }}" class="py-1" onclick="event.preventDefault(); console.log('submit'); document.getElementById('delete-item').submit();">
+			            	<a href="{{ url('items/'.$item["id"]) }}" class="delete-item py-1" data-label="{{ __('Are you sure to delete this Item?') }}" data-form="#delete-item">
 								<span title="Delete">
 									<i class="fas fa-trash-alt text-lg transition-colors duration-150 text-red-500 hover:text-red-600"></i>
 								</span>

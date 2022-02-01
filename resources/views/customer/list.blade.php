@@ -1,6 +1,6 @@
 @extends('dashboard.index')
 @section('content')
-<section class="container mx-auto p-6 font-mono">
+<section class="container mx-auto sm:p-6 font-mono">
 	<div class="w-full mb-8 overflow-auto md:overflow-hidden rounded-lg shadow-lg">
 		@if (!empty($customers))
 		<div class="w-full">
@@ -34,7 +34,7 @@
 									<i class="fas fa-edit text-lg transition-colors duration-150 text-blue-500 hover:text-blue-600"></i>
 								</span>
 							</a>
-                            <a href="{{ url('user/'.$customer->id) }}" class="py-1" onclick="event.preventDefault(); console.log('submit'); document.getElementById('delete-customer').submit();">
+                            <a href="{{ url('user/'.$customer->id) }}" class="py-1 delete-item" data-label="{{ __('Are you sure to delete this Customer?') }}" data-form="#delete-customer">
 								<span title="Delete">
 									<i class="fas fa-trash-alt text-lg transition-colors duration-150 text-red-500 hover:text-red-600"></i>
 								</span>
