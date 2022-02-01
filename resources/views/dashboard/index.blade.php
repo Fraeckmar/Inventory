@@ -28,7 +28,7 @@
                         @if (empty(App\Http\Controllers\Settings::get('app_logo')))
                             <img src="{{ asset('img/logo.png') }}" alt="Inventory" class="max-w-[60px]">
                         @else
-                            <img src="{{ asset('storage/images').'/'.App\Http\Controllers\Settings::get('app_logo') }}" alt="Inventory" class="max-w-[60px]">
+                            <img src="{{ Storage::url('images/'.App\Http\Controllers\Settings::get('app_logo')) }}" alt="Inventory" class="max-w-[60px]">
                         @endif                    
                     </a>
                 </div>
