@@ -1,0 +1,1 @@
+<h3>{{ __('Welcome to our website') }}</h3>
