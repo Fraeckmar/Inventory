@@ -27,7 +27,7 @@ class Settings extends Controller
                 'app_logo' => 'mimes:jpg,png,jpeg|max:1054'
             ]);
             $fileName = 'logo.'.$request->app_logo->extension(); 
-            $request->app_logo->storeAs('images', $fileName, 'public');
+            $request->app_logo->storeAs('images', $fileName);
             $this->settings->put('app_logo', $fileName);
         }
         $fields = $request->except(['_token', 'app_logo']);
