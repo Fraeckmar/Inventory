@@ -24,17 +24,17 @@
 			            <td class="px-4 py-3 text-sm border"> {{ $customer->total_items }} </td>
 						<td class="px-4 py-3 text-sm border"> {{ Format::price($customer->total_amount) }} </td>
 			            <td class="px-4 py-3 text-sm border">
-							<a href="{{ url('/user/'.$customer->id) }}" class="py-1">
+							<a href="{{ url('/user/'.$customer->id) }}" class="p-1">
 								<span title="View">
 									<i class="fas fa-eye text-lg transition-colors duration-150 text-green-500 hover:text-green-600"></i>
 								</span>
 							</a>
-                            <a href="{{ url('/user/'.$customer->id.'/edit') }}" class="py-1">
+                            <a href="{{ url('/user/'.$customer->id.'/edit') }}" class="p-1">
 								<span title="View">
 									<i class="fas fa-edit text-lg transition-colors duration-150 text-blue-500 hover:text-blue-600"></i>
 								</span>
 							</a>
-                            <a href="{{ url('user/'.$customer->id) }}" class="py-1 delete-item" data-label="{{ __('Are you sure to delete this Customer?') }}" data-form="#delete-customer">
+                            <a href="{{ url('user/'.$customer->id) }}" class="p-1 delete-item" data-label="{{ __('Are you sure to delete this Customer?') }}" data-form="#delete-customer">
 								<span title="Delete">
 									<i class="fas fa-trash-alt text-lg transition-colors duration-150 text-red-500 hover:text-red-600"></i>
 								</span>

@@ -24,7 +24,7 @@
 			            <td class="px-4 py-3 text-sm border"> {{ $item['balance'] }} </td>
 						<td class="px-4 py-3 text-sm border"> <span class="cursor-pointer" title="Print"><i class="fas fa-print text-xl text-gray-700 hover:text-gray-800"></i></span> </td>
 			            <td class="px-4 py-3 text-sm border">
-							<a href="{{ url('items/'.$item["id"]) }}" class="py-1">
+							<a href="{{ url('items/'.$item["id"]) }}" class="p-1">
 								<span title="View">
 									<i class="fas fa-eye text-lg transition-colors duration-150 text-green-500 hover:text-green-600"></i>
 								</span>
@@ -34,7 +34,7 @@
 									<i class="fas fa-edit text-lg transition-colors duration-150 text-blue-500 hover:text-blue-600"></i>
 								</span>
 							</a>
-			            	<a href="{{ url('items/'.$item["id"]) }}" class="delete-item py-1" data-label="{{ __('Are you sure to delete this Item?') }}" data-form="#delete-item">
+			            	<a href="{{ url('items/'.$item["id"]) }}" class="delete-item p-1" data-label="{{ __('Are you sure to delete this Item?') }}" data-form="#delete-item">
 								<span title="Delete">
 									<i class="fas fa-trash-alt text-lg transition-colors duration-150 text-red-500 hover:text-red-600"></i>
 								</span>
