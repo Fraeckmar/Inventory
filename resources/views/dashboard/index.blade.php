@@ -19,6 +19,7 @@
     
     <!-- Styles -->
     <link href="{{ mix('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
 </head>
 <body class="dashboard bg-gray-100 h-screen antialiased leading-none font-sans">
     <header class="z-20">
