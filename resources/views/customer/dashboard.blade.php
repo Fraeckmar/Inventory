@@ -1,8 +1,5 @@
 @extends('dashboard.index')
 @section('content')
-@php
-    //dd($orders);
-@endphp
 <section class="container mx-auto p-6">
     {{-- Customer Info --}}
     <h3 class="text-xl font-semibold mb-4">{{ __('Customer') }}</h3>

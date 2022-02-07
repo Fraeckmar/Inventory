@@ -35,7 +35,9 @@ return array(
     '6124b4c8570aa390c21fafd04a26c69f' => $vendorDir . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
     'b6b991a57620e2fb6b2f66f03fe9ddc2' => $vendorDir . '/symfony/string/Resources/functions.php',
     'ed962a97bd972bc82007176b647d4e36' => $vendorDir . '/facade/ignition/src/helpers.php',
+    'f18cc91337d49233e5754e93f3ed9ec3' => $vendorDir . '/laravelcollective/html/src/helpers.php',
     'df076cbee67d36ab6581c69fef1eff2e' => $baseDir . '/app/Helpers/Format.php',
     'bfbb0970c03feb7cfec1632d69910048' => $baseDir . '/app/Helpers/Field.php',
     '8fde5feda9697fe0ee53a3938c839fb0' => $baseDir . '/app/Helpers/Helper.php',
+    'dca9be1fe00203eb2c7e6e00265f7634' => $baseDir . '/app/Helpers/GenField.php',
 );

@@ -50,7 +50,6 @@ class UserController extends Controller
         $total_order = $orders->reduce(function($carry, $item){
             return $carry + $item->item_total;
         }, 0);
-
         return view('customer.dashboard', [
             'customer' => User::find($id),
             'orders' => $orders,
@@ -66,7 +65,19 @@ class UserController extends Controller
     }
     public function update(Request $request, $id)
     {
-
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required',
+            'address' => 'required',
+            'role' => 'required'
+        ]);
+        $user = User::findOrFail($id);
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->address = $request->address;
+        $user->role = $request->role;
+        $user->save();
+        return redirect('user/'.$id.'/edit')->with('message', 'Customer update successfully!');
     }
 
     public function destroy($id)

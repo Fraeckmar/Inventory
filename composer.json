@@ -12,6 +12,7 @@
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
         "laravel/ui": "^3.4",
+        "laravelcollective/html": "^6.2",
         "spatie/valuestore": "^1.3"
     },
     "require-dev": {
@@ -32,7 +33,8 @@
         "files": [
             "app/Helpers/Format.php",
             "app/Helpers/Field.php",
-            "app/Helpers/Helper.php"
+            "app/Helpers/Helper.php",
+            "app/Helpers/GenField.php"
         ]
     },
     "autoload-dev": {

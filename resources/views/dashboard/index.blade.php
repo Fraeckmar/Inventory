@@ -64,7 +64,7 @@
     </header>
     <main>
         <div class="flex flex-col md:flex-row h-screen">
-            @if(Auth::check())
+            @if(Auth::check() && Auth::user()->role != 'customer')
                 @include('dashboard.nav.navigation')
             @endif           
             <div id="content" class="bg-gray-100 w-full mt-24 p-4 pb-24 sm:mt-20">

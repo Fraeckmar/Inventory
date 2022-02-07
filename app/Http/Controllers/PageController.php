@@ -44,7 +44,25 @@ class PageController extends Controller
                 'items' => $items
             ]);
         }
-    	return view('customer.dashboard');
+
+        $userId = Auth::user()->id;
+        $orders = DB::table('item_bounds')
+            ->leftJoin("items", "item_bounds.item", "=", "items.id")
+            ->leftJoin("users", "item_bounds.customer", "=", 'users.id')
+            ->selectRaw("item_bounds.qty, item_bounds.created_at as date, items.item, items.price, item_bounds.qty * items.price as item_total")
+            ->whereRaw("item_bounds.item = items.id AND item_bounds.customer = ?", [$userId])
+            ->orderBy("date")
+            ->get();
+
+        $total_order = $orders->reduce(function($carry, $item){
+            return $carry + $item->item_total;
+        }, 0);
+        
+        return view('customer.dashboard', [
+            'customer' => Auth::user(),
+            'orders' => $orders,
+            'total_order' => $total_order
+        ]);
     }
 
     // Reports

@@ -33,11 +33,11 @@
 .sub-item {
     display: block;
     background-color: #1f2937;
+    box-shadow: 0px 2px 2px #0f1113;
     width: 100%;
 }
 .sub-item li {
     padding-left: 15px;
-    padding-bottom: 0;
 }
 
 /** 
