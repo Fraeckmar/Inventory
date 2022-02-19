@@ -84,6 +84,7 @@ class PageController extends Controller
             (SELECT SUM(item_bounds.qty * items.price) as total FROM item_bounds INNER JOIN items ON item_bounds.item = items.id  WHERE item_bounds.customer = users.id AND item_bounds.type = 'outbound') AS total_amount
         ")
         ->where('users.role', 'customer')
+        ->distinct()
         ->get()
         ->toArray();
         return view('customer.list', [
