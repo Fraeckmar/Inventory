@@ -118,6 +118,7 @@ class ItemBoundController extends Controller
 
         $item_bounds = ItemBound::whereRaw($where_clase)->get()->toArray();        
         $fields = Field::boundFields('outbound');
+        $fields['created_at'] = ['label' => __('Date')];
         $customers = User::where('role', 'customer')->get()->toArray();
         $customers = array_reduce($customers, function($carry, $customer){
             $carry[$customer['id']] = $customer['name'];
@@ -152,6 +153,9 @@ class ItemBoundController extends Controller
                         if (array_key_exists($value, $data_options[$item_key])) {
                             $value = $data_options[$item_key][$value];                            
                         }                        
+                    }
+                    if ($item_key == 'created_at') {
+                        $value = date('Y-m-d', strtotime($value));
                     }
                     $csv_content_line .= !empty($csv_content_line) ? ',' : '';
                     $csv_content_line .= '"'.$value.'"';

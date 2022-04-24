@@ -1,0 +1,7 @@
+"Item","Quantity","Customer","Remarks","Date"
+"Orange","10","John Doe","Send 20 boxes to JD","2022-01-26T13:46:58.000000Z"
+"Orange","30","John Doe","Send 30 boxes to JD","2022-01-26T13:51:41.000000Z"
+"Choco","30","Juan Dela Cruz","Send 30 boxes to JDK","2022-01-26T13:52:33.000000Z"
+"Choco","50","John Doe","Test","2022-02-19T09:23:26.000000Z"
+"Choco","60","Juan Dela Cruz","Test","2022-02-19T09:24:05.000000Z"
+"Choco","10","Juan Dela Cruz","Test","2022-02-19T09:24:20.000000Z"
