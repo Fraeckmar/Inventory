@@ -38,6 +38,12 @@
     margin-right: -15px;
     margin-left: -15px;
 }
+.text-error {
+    color: #ef4444;
+}
+.text-success {
+    color: #22c55e;
+}
 .table-action {
     min-width: 110px;
 }

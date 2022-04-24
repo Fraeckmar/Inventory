@@ -6,6 +6,11 @@
                 <i class="fas fa-chart-bar pr-0 md:pr-3 fa-2x h-5"></i><span class="inline pb-1 md:pb-0 text-sm md:text-base">{{ __('Analytics') }}</span>
             </a>
         </li>
+        <li class="menu-item mr-3 flex-1 p-2 sm:p-0">
+            <a href="{{ url('orders') }}" class="block py-1 md:py-3 pl-1 align-middle text-white no-underline hover:text-purple-400 @if(request()->is('orders')) text-purple-400 @endif">
+                <i class="fas fa-shopping-bag pr-0 md:pr-3 fa-2x h-5"></i><span class="inline pb-1 md:pb-0 text-sm md:text-base">{{ __('Orders') }}</span>
+            </a>
+        </li>
         {{-- Items --}}
         <li class="menu-item mr-3 flex-1 p-2 sm:p-0">
             <a href="{{ url('/items') }}" class="block py-1 md:py-3 pl-1 align-middle text-white no-underline hover:text-purple-400 @if(request()->is('items')) text-purple-400 @endif">

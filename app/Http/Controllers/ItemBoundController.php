@@ -9,6 +9,7 @@ use App\Models\Item;
 use App\Models\ItemBound;
 use App\Models\User;
 use Illuminate\Support\Facades\Response;
+use App\Datatable\Datatable;
 use Field;
 
 class ItemBoundController extends Controller
@@ -20,13 +21,87 @@ class ItemBoundController extends Controller
      */
     public function index()
     {
-        //
+        $tbl_column_fields = [
+            [
+                'heading' => __('Item'),
+                'key' => 'item',
+                'td_class' => 'font-semibold text-sm'
+            ],
+            [
+                'heading' => __('Qty'),
+                'key' => 'qty',
+                'td_class' => 'text-sm'
+            ],
+            [
+                'heading' => __('Customer'),
+                'key' => 'customer',
+                'td_class' => 'text-sm'
+            ],
+            [
+                'heading' => __('Remarks'),
+                'key' => 'remarks',
+                'td_class' => 'text-sm'
+            ],
+            [
+                'heading' => __('Date'),
+                'key' => 'created_at',
+                'td_class' => 'text-sm'
+            ]
+        ];
+        $tbl_actions = [
+            [
+                'action' => 'edit',
+                'model' => 'item-bound',
+            ],
+            [
+                'action' => 'delete',
+                'model' => 'item-bound',
+                'class' => 'delete-item',
+                'extra' => 'data-label="Are you sure to delete this Item?"'
+            ],
+            [
+                'action' => 'receipt',
+                'model' => 'item-bound',
+                'class' => 'item-receipt',
+            ],
+        ];
+
+        $items = Item::all()->toArray();
+        $items = array_reduce($items, function($carry, $item){
+            $carry[$item['id']] = $item;
+            return $carry;
+        });
+        $customers = User::where('role', 'customer')->get()->toArray();
+        $customers = array_reduce($customers, function($carry, $customer){
+            $carry[$customer['id']] = $customer;
+            return $carry;
+        });
+
+        $tbl_column_values = ItemBound::where('type', 'outbound')->get()->toArray();
+        $tbl_column_values = array_reduce($tbl_column_values, function($carry, $order) use($customers, $items){
+            $customer_id = $order['customer'];
+            $item_id = $order['item'];
+            $order['created_at'] = date('y-m-d', strtotime($order['created_at']));
+            $order['item'] = array_key_exists($item_id, $items) ? $items[$item_id]['item'] : $order['item'];
+            $order['customer'] = array_key_exists($customer_id, $customers) ? $customers[$customer_id]['name'] : $order['customer'];
+            $carry[] = $order;
+            return $carry;
+        });
+        
+        $dataTable = new Datatable();
+        $dataTable->set_table_column_fields($tbl_column_fields);
+        $dataTable->set_table_column_values($tbl_column_values);
+        $dataTable->set_table_actions($tbl_actions);
+        return view('order.list', ['dataTable' => $dataTable]);
     }
 
 	// Item Inbound
     public function inbound()
 	{
-		$items = Item::all();
+		$items = Item::all()->toArray();
+        $itemIDS = array_column($items, 'id');
+        $itemNames = array_column($items, 'item');
+        $items = array_combine($itemIDS, $itemNames);
 		return view('items.item-bound', [
 			'items' => $items,
             'type' => 'inbound',
@@ -36,11 +111,20 @@ class ItemBoundController extends Controller
 	// Item Outbound
 	public function outbound()
 	{
-		$items = Item::all();
+		$items = Item::all()->toArray();
+        $itemIDS = array_column($items, 'id');
+        $itemNames = array_column($items, 'item');
+        $items = array_combine($itemIDS, $itemNames);
+
+        $customers = User::where('role', 'customer')->get()->toArray();
+        $customerIDS = array_column($customers, 'id');
+        $customerNames = array_column($customers, 'name');
+        $customers = array_combine($customerIDS, $customerNames);
+        
 		return view('items.item-bound', [
 			'items' => $items,
             'type' => 'outbound',
-            'customers' => User::where('role', 'customer')->get()
+            'customers' => $customers
 		]);
 	}
 
@@ -52,11 +136,15 @@ class ItemBoundController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $fields = [
             'item' => 'required',
             'qty' => 'required|numeric',
             'type' => 'required'
-        ]);
+        ];
+        if ($request->has('customer')) {
+            $fields['customer'] = 'required';
+        }
+        $request->validate($fields);
         $type = $request->type;
         $remarks = $request->has('remarks')? $request->remarks : '';
         // Save Inbound
@@ -74,7 +162,7 @@ class ItemBoundController extends Controller
         $itemBoundSuccessMsg = __('Inbound successfully!');
         if($type == 'outbound'){
             if($item->balance < $request->qty){
-                return back()->with('error', 'Error! The quantity input should not more than in current balance.');
+                return back()->with('error', 'Error! The quantity must less than or equal to item current balance.');
             }
             $item->balance -= $request->qty;
             $itemBoundSuccessMsg = __('Outbound successfully!');
@@ -196,7 +284,26 @@ class ItemBoundController extends Controller
      */
     public function edit($id)
     {
-        //
+        if(!Auth::check()){
+            return redirect('login');
+        }
+        $items = Item::all()->toArray();
+        $items = array_reduce($items, function($carry, $item){
+            $carry[$item['id']] = $item['item'];
+            return $carry;
+        });
+
+        $customers = User::where('role', 'customer')->get()->toArray();
+        $customers = array_reduce($customers, function($carry, $customer){
+            $carry[$customer['id']] = $customer['name'];
+            return $carry;
+        });
+
+        return view('order.edit', [
+            'itemBound' => ItemBound::find($id),
+            'items' => $items,
+            'customers' => $customers
+        ]);
     }
 
     /**
@@ -208,7 +315,44 @@ class ItemBoundController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $type = 'outbound';
+        $fields = [
+            'item' => 'required',
+            'qty' => 'required|numeric',
+            'customer' => 'required|numeric'
+        ];
+        if ($request->has('customer')) {
+            $fields['customer'] = 'required';
+        }
+        $request->validate($fields);        
+        $remarks = $request->has('remarks')? $request->remarks : '';
+
+        // Get  prev Outbound Qty
         
+        
+
+        // Save Inbound
+        $itemBound = ItemBound::find($id);
+        $outbound_prev_qty = $itemBound->qty;
+        $itemBound->item = $request->item;        
+        $itemBound->qty = $request->qty;
+        $itemBound->type = $type;
+        $itemBound->customer = $request->customer;
+        $itemBound->remarks = $remarks;
+        $itemBound->updated_by = Auth::id();
+        $itemBound->save();
+
+        // Update Item balance
+        $item = Item::find($request->item);
+        $new_balance = $outbound_prev_qty;
+        if ($outbound_prev_qty < $request->qty) {
+            $new_balance = $new_balance - ($request->qty - $outbound_prev_qty);
+        } else {
+            $new_balance = $new_balance + ($outbound_prev_qty - $request->qty);
+        }
+        $item->balance = $new_balance;
+        $item->save();
+        return redirect('item-bound/'.$id.'/edit')->with('success', 'Order update successfully!');
     }
 
     /**

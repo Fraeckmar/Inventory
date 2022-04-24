@@ -9,7 +9,7 @@ jQuery(document).ready(function($){
         var label = $(this).data('label');
         var confirmed = confirm(label);
         if(confirmed){
-            $(formId).submit();
+            $(formId).trigger('submit');
         }
     });
 });

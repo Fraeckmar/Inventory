@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Item;
+use App\Models\ItemBound;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -36,12 +37,13 @@ class PageController extends Controller
             //$query = DB::getQueryLog();
             //echo $query[0]['query'];
             //dd($revenue);
+            $orders = ItemBound::where('type', 'outbound')->orderBy("created_at")->get()->count();
             $customers = User::where('role', 'customer')->get()->count();
             $items  = Item::all()->count();
             return view('dashboard.dashboard', [
                 'revenue' => $revenue,
                 'customers' => $customers,
-                'items' => $items
+                'orders' => $orders
             ]);
         }
 

@@ -167,9 +167,11 @@ class ItemsController extends Controller
             return redirect('login');
         }
         $setting = new Settings();
+        $categories = array_map('trim', $setting->get('items_category'));
+        $categories = !empty($categories) ? array_combine($categories, $categories) : [];
         return view('items.edit', [
             'item' => Item::find($id),
-            'categories' => array_map('trim', $setting->get('items_category'))
+            'categories' => $categories
         ]);
     }
 

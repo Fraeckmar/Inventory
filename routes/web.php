@@ -9,7 +9,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ItemsController;
 use App\Http\Controllers\ItemBoundController;
 use App\Http\Controllers\Settings;
-use App\Http\Controllers\ReportController;
+use App\Http\Controllers\OrdersController;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,6 +51,8 @@ Route::resource('/items', ItemsController::class);
 Route::resource('/item-bound', ItemBoundController::class);
 Route::get('/inbound', [ItemBoundController::class, 'inbound']);
 Route::get('/outbound', [ItemBoundController::class, 'outbound']);
+// Orders
+Route::get('/orders', [ItemBoundController::class, 'index']);
 // Setting
 Route::get('/settings', [Settings::class, 'page']);
 Route::post('/save-settings', [Settings::class, 'save']);
