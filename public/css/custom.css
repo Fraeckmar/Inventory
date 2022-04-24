@@ -38,7 +38,14 @@
     margin-right: -15px;
     margin-left: -15px;
 }
-
+.table-action {
+    min-width: 110px;
+}
+@media (max-width: 600px) {
+    .container {
+        padding: 0;
+    }
+}
 @media (min-width: 768px) {
     .container {
         width: 750px;

@@ -1570,6 +1570,10 @@ input:checked + .toggle-bg {
   padding: 0.5rem;
 }
 
+.p-0 {
+  padding: 0;
+}
+
 .px-3 {
   padding-left: 0.75rem;
   padding-right: 0.75rem;
