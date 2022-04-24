@@ -99,12 +99,12 @@ class ItemBoundController extends Controller
 
     function generate_report(Request $request)
     {
-        $where_clase = "`id` IS NOT NULL";
+        $where_clase = "item_bounds.id IS NOT NULL";
         if ($request->has('date_from') && $request->has('date_to') && !empty($request->date_from) && !empty($request->date_to)) {
             $date_from = date('Y-m-d', strtotime($request->date_from));
             $date_to = date('Y-m-d', strtotime($request->date_to));
             $where_clase .= !empty($where_clase) ? " AND" : "";
-            $where_clase .= " `created_at` >= '".$date_from."' AND `created_at` <= '".$date_to."'";
+            $where_clase .= " item_bounds.created_at >= '".$date_from."' AND item_bounds.created_at <= '".$date_to."'";
         }
         if ($request->has('customer') && !empty($request->customer)) {
             $where_clase .= !empty($where_clase) ? " AND" : "";
@@ -113,7 +113,7 @@ class ItemBoundController extends Controller
 
         if ($request->has('type') && !empty($request->type)) {
             $where_clase .= !empty($where_clase) ? " AND" : "";
-            $where_clase .= " `type` = '".strtolower($request->type)."'";
+            $where_clase .= " item_bounds.type = '".strtolower($request->type)."'";
         }
 
         $item_bounds = ItemBound::whereRaw($where_clase)->get()->toArray();        
