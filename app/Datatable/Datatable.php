@@ -50,6 +50,9 @@ class Datatable {
                 
                 $html .= '<tbody class="bg-white">';                        
                 foreach ($this->table_column_values as $column_value) {
+                    if (array_key_exists('created_at', $column_value)) {
+                        $column_value['created_at'] = date('F j, Y', strtotime($column_value['created_at']));
+                    }
                     $html .= '<tr class="text-gray-700">';
                     foreach ($this->table_column_fields as $column_field) {
                         $td_class = array_key_exists('td_class', $column_field) ? $column_field['td_class'] : '';
