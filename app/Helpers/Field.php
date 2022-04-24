@@ -87,17 +87,56 @@ class Field
     }
 
     /** 
+     * ItemBounds Fields
+    */
+    public static function boundFields($type='inbound')
+    {
+        $fields['item'] = [
+            'label' => __('Item'),
+            'placeholder' => '',
+            'type' => 'select',                
+            'class' => self::fieldClass()['item']['select'],
+            'label_class' => self::fieldClass()['item']['label']
+        ];
+        $fields['qty'] = [
+            'label' => __('Quantity'),
+            'placeholder' => '',
+            'type' => 'number',
+            'class' => self::fieldClass()['item']['input'],
+            'label_class' => self::fieldClass()['item']['label']
+        ];
+        if($type == 'outbound') {
+            $fields['customer'] = [
+                'label' => __('Customer'),
+                'placeholder' => '',
+                'type' => 'select',
+                'class' => self::fieldClass()['item']['select'],
+                'label_class' => self::fieldClass()['item']['label']
+            ];
+        }
+        $fields['remarks'] = [
+            'label' => __('Remarks'),
+            'placeholder' => '',
+            'type' => 'textarea',
+            'class' => self::fieldClass()['item']['textarea'],
+            'label_class' => self::fieldClass()['item']['label']
+        ];
+        return $fields;
+    }
+
+    /** 
      * HTML Input Field Classes
     */
-
     public static function fieldClass()
     {
         return [
             'item' => [
-                'label' => 'text-sm font-medium text-gray-900 block dark:text-gray-300 mb-1',
-                'input' => 'border border-gray-300 sm:text-sm rounded-md block w-full p-2'
+                'label' => 'text-sm font-medium text-gray-900 block dark:text-gray-300 py-2',
+                'input' => 'border border-gray-300 sm:text-sm rounded-md block w-full p-3',
+                'select' => 'block border border-grey-light w-full p-3 rounded mb-4',
+                'textarea' => 'block border border-grey-light w-full p-3 rounded mb-4'
             ],
-            'button' => 'w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-md text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 uppercase cursor-pointer'
+            'button' => 'w-full text-center py-4 rounded bg-white text-black border border-black hover:text-white hover:bg-gray-800 focus:outline-none my-1 cursor-pointer'
         ];
     }
     /**
@@ -107,10 +146,15 @@ class Field
     {
         return [
             'administrator' => __('Administrator'),
-            'agent' => __('Agent'),
+            // 'agent' => __('Agent'),
             'customer' => __('Customer'),
-            'driver' => __('Driver'),
-            'employee' => __('Employee')
+            // 'driver' => __('Driver'),
+            // 'employee' => __('Employee')
         ];
+    }
+
+    public static function itemBoundTypes()
+    {
+        return ['Inbound', 'Outbound'];
     }
 }

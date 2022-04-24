@@ -1,0 +1,7 @@
+"Item","Quantity","Customer","Remarks"
+"Orange","10","John Doe","Send 20 boxes to JD"
+"Orange","30","John Doe","Send 30 boxes to JD"
+"Choco","30","Juan Dela Cruz","Send 30 boxes to JDK"
+"Choco","50","John Doe","Test"
+"Choco","60","Juan Dela Cruz","Test"
+"Choco","10","Juan Dela Cruz","Test"

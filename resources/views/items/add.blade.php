@@ -1,7 +1,7 @@
 @extends('dashboard.index')
 @section('content')
 @if(session('message'))
-	{{ GenField::successNotification(session('message')) }}
+	{{ GenField::notification(session('message'), 'success') }}
 @endif
 <div class="card mx-auto mt-4 w-full sm:w-full md:w-2/3">
 	<h1 class="card-header">{{ __('Add New Item') }}</h1>

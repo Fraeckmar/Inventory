@@ -65,14 +65,6 @@ class PageController extends Controller
         ]);
     }
 
-    // Reports
-    public function report()
-    {
-        return view('items.report', [
-            'customers' => User::where('role', 'customer')->get(),
-        ]);
-    }
-
     // Customers
     public function customers()
     {

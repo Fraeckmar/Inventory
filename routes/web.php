@@ -9,6 +9,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ItemsController;
 use App\Http\Controllers\ItemBoundController;
 use App\Http\Controllers\Settings;
+use App\Http\Controllers\ReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,7 +41,8 @@ Route::post('/logout', [AuthController::class, 'logout']);
 // User
 Route::resource('/user', UserController::class);
 // Reports
-Route::get('/reports', [PageController::class, 'report']);
+Route::get('/reports', [ItemBoundController::class, 'report']);
+Route::post('/generate-report', [ItemBoundController::class, 'generate_report']);
 // Customers
 Route::get('/customers', [PageController::class, 'customers']);
 // Items

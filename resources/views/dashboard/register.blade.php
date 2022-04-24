@@ -4,7 +4,12 @@
 	<div class="container max-w-md mx-auto flex-1 flex flex-col items-center justify-center px-2 mt-20">
 		<div class="card w-full">
 			<div class="card-header">
-				<h1 class="text-2xl text-center">{{ __('Sign Up') }}</h1>
+				@if (Auth::check() && Auth::user()->role = 'administrator')
+					<h1 class="text-2xl text-center">{{ __('Create Account') }}</h1>
+				@else
+					<h1 class="text-2xl text-center">{{ __('Sign Up') }}</h1>
+				@endif
+				
 			</div>
 			<div class="card-body">
 				<form action="/user" method="POST">
@@ -93,10 +98,13 @@
 						>{{ __('Create Account') }}</button>
 					</div>
 				</form>
-				<div class="text-sm font-medium text-gray-500 dark:text-gray-300 mt-2">
-					{{ __('Already have an account') }}? 
-					<a href="{{ url('login') }}" class="text-blue-700 hover:underline dark:text-blue-500">{{ __('Login') }}</a>
-				</div>
+				@if (!Auth::check())
+					<div class="text-sm font-medium text-gray-500 dark:text-gray-300 mt-2">
+						{{ __('Already have an account') }}? 
+						<a href="{{ url('login') }}" class="text-blue-700 hover:underline dark:text-blue-500">{{ __('Login') }}</a>
+					</div>
+				@endif
+				
 			</div>
 		</div>
 	</div>

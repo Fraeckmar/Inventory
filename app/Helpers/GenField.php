@@ -3,6 +3,7 @@ class GenField
 {
     public static function input($type, $id, $value='', $class='', $options=[])
     {
+        $options = array_merge(['' => 'Choose..'], $options);
         $field = '';
         switch ($type) {
             case 'text':
@@ -23,27 +24,18 @@ class GenField
     /** 
      * Display successfull message
     */
-    public static function successNotification($msg)
+    public static function notification($msg, $type='success')
     {
-        ob_start();
-        ?>
-        <p class="text-center mt-4 py-4 bg-white shadow-md rounded-sm mx-auto w-full sm:w-full md:w-2/3">
-            <span class="text-green-600"><?php echo $msg; ?></span>
-        </p>
-        <?php
-        echo ob_get_clean();
-    }
-    /** 
-     * Display error message
-    */
-    public function errorNotification($type, $msg)
-    {
-        ob_start();
-        if($type == 'field'){
-            ?>
-            <p class="text-red-500 m-0"><?php echo $msg ?></p>
-            <?php
+        $notificaton = '';
+        if ($type == 'success') {
+            $notificaton .= '<p class="text-center mt-4 py-4 bg-white shadow-md rounded-sm mx-auto w-fit sm:w-full">';
+                $notificaton .= '<span class="text-green-600">'.$msg.'</span>';
+            $notificaton .= '</p>';
+        } else if ($type == 'error') {
+            $notificaton .= '<p class="text-center mt-4 py-4 bg-white shadow-md rounded-sm mx-auto w-fit sm:w-full">';
+                $notificaton .= '<span class="text-red-600">'.$msg.'</span>';
+            $notificaton .= '</p>';
         }
-        echo ob_get_clean();
+        echo $notificaton;
     }
 }

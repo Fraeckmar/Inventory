@@ -9,6 +9,7 @@ use App\Http\Controllers\Settings;
 use App\Models\Item;
 use App\Models\User;
 use App\Models\ItemBound;
+use App\Datatable\Datatable;
 
 class ItemsController extends Controller
 {
@@ -18,8 +19,61 @@ class ItemsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
-        return view('items.items', ['items' => Item::all()->toArray()]);
+    {  
+        $tbl_column_fields = [
+            [
+                'heading' => __('Item'),
+                'key' => 'item',
+                'td_class' => 'font-semibold text-sm'
+            ],
+            [
+                'heading' => __('Description'),
+                'key' => 'description',
+                'td_class' => 'text-sm'
+            ],
+            [
+                'heading' => __('Price'),
+                'key' => 'price',
+                'td_class' => 'text-sm'
+            ],
+            [
+                'heading' => __('Remaining Balance'),
+                'key' => 'balance',
+                'td_class' => 'text-sm'
+            ],
+            [
+                'heading' => __('Category'),
+                'key' => 'category',
+                'td_class' => 'text-sm'
+            ]
+        ];
+        $tbl_actions = [
+            [
+                'action' => '',
+                'model' => 'items',
+            ],
+            [
+                'action' => 'edit',
+                'model' => 'items',
+            ],
+            [
+                'action' => 'delete',
+                'model' => 'items',
+                'class' => 'delete-item',
+                'extra' => 'data-label="Are you sure to delete this Item?"'
+            ],
+            // [
+            //     'action' => 'receipt',
+            //     'model' => 'items',
+            //     'class' => 'item-receipt',
+            // ],
+        ];
+        $tbl_column_values = Item::all()->toArray();
+        $dataTable = new Datatable();
+        $dataTable->set_table_column_fields($tbl_column_fields);
+        $dataTable->set_table_column_values($tbl_column_values);
+        $dataTable->set_table_actions($tbl_actions);
+        return view('items.items', ['dataTable' => $dataTable]);
     }
 
     /**
@@ -33,6 +87,7 @@ class ItemsController extends Controller
             return redirect('login');
         }
         $categories = !empty(Settings::get('items_category'))? array_map('trim', Settings::get('items_category')) : [];
+        $categories = !empty($categories) ? array_combine($categories, $categories) : [];
         return view('items.add')->with('categories', $categories);
     }
 
@@ -113,7 +168,7 @@ class ItemsController extends Controller
         }
         $setting = new Settings();
         return view('items.edit', [
-            'item' => Item::find($id)->first(),
+            'item' => Item::find($id),
             'categories' => array_map('trim', $setting->get('items_category'))
         ]);
     }
