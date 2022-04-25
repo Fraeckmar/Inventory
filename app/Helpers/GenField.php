@@ -1,35 +1,45 @@
 <?php
+
 class GenField
 {
-    public static function input($type, $id, $value='', $class='', $options=[])
+    public static function input($field=[])
     {
-        $options = [ '' => 'Choose..'] + $options;
-        $field = '';
-        switch ($type) {
-            case 'text':
-                $field = Form::text($id, $value, ['class'=>$class]);
-                break;
-            case 'number':
-                $field = Form::number($id, $value, ['class'=>$class]);
-                break;
-            case 'select':
-                $field = Form::select($id, $options, $value, ['class'=>$class]);
-                break;
-            case 'textarea':
-                $field = Form::textarea($id, $value, [
-                    'class' => $class,
-                    'rows' => 3,
-                    'name'  => $id,
-                    'id'    => $id
-                ]);
-                break;
-            case 'submit':
-                $field = Form::submit($value, ['class' => Field::fieldClass()['button']]);
-                break;
-            default:
-                $field = Form::text($id, $value, ['class'=>$class]);
+        if (empty($field)) {
+            return 'Empty Fields';
         }
-        return $field;
+        
+        $type = array_key_exists('type', $field) ? $field['type'] : 'text';
+        $key = array_key_exists('key', $field) ? $field['key'] : '';
+        $label = array_key_exists('label', $field) ? $field['label'] : '';
+        $value = array_key_exists('value', $field) ? $field['value'] : '';
+        $options = array_key_exists('options', $field) ? $field['options'] : [];
+        $label_class = array_key_exists('label_class', $field) ? $field['label_class'] : '';
+        $class = array_key_exists('class', $field) ? $field['class'] : '';
+        $options = [ '' => 'Choose..'] + $options;
+
+        $html = '<div class="form-group mb-3">';
+        if (in_array($field['type'], array('text', 'number'))) {
+            $html .= '<label for="'.$key.'" class="'.$label_class.'">'.$label.'</label>';
+            $html .= '<input type="'.$type.'" id="'.$key.'" name="'.$key.'" value="'.$value.'" class="'.$class.'"/>';
+        }
+        if (in_array($type, array('submit', 'button'))) {
+            $html .= '<button type="'.$type.'" id="'.$key.'" class="'.$class.'">'.$label.'</button>';
+        }
+        if ($type == 'select') {
+            $html .= '<label for="'.$key.'" class="'.$label_class.'">'.$label.'</label>';
+            $html .= '<select id="'.$key.'" name="'.$key.'" class="'.$class.'">';
+                foreach ($options as $op_value => $op_label) {
+                    $selected = $op_value == $value ? 'selected' : '';
+                    $html .= '<option value="'.$op_value.'" '.$selected.'>'.$op_label.'</option>';
+                }
+            $html .= '</select>';
+        }
+        if ($type == 'textarea') {
+            $html .= '<label for="'.$key.'" class="'.$label_class.'">'.$label.'</label>';
+            $html .= '<textarea row="3" id="'.$key.'" name="'.$key.'" class="'.$class.'">'.$value.'</textarea>';
+        }
+        $html .= '</div>';
+        echo $html;
     }
 
     /** 
@@ -47,5 +57,15 @@ class GenField
             $notificaton .= '</p>';
         }        
         echo $notificaton;
+    }
+
+    public static function open($attributes=[])
+    {
+        return Form::open($attributes);
+    }
+
+    public static function end()
+    {
+        return Form::end();
     }
 }

@@ -69,7 +69,7 @@ class ItemsController extends Controller
             // ],
         ];
         $tbl_column_values = Item::all()->toArray();
-        $dataTable = new Datatable();
+        $dataTable = new Datatable('items');
         $dataTable->set_table_column_fields($tbl_column_fields);
         $dataTable->set_table_column_values($tbl_column_values);
         $dataTable->set_table_actions($tbl_actions);

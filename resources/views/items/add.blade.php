@@ -9,15 +9,22 @@
 		{{ Form::open(['action'=>'App\Http\Controllers\ItemsController@store', 'method'=>'post']) }}
 			@foreach ( Field::item() as $key => $field )
 				@php
-					$option = ($field['type'] == 'select' && !empty($categories))? $categories : [];
+					$options = ($field['type'] == 'select' && !empty($categories))? $categories : [];
+					$field['options'] = $options;
 				@endphp
-				<div class="mb-5">
-					{{ Form::label($key, $field['label'], ['class'=>$field['label_class']]) }}
-					{{ GenField::input($field['type'], $key, '', $field['class'], $option) }}
-				</div>
+				@error($key)
+					{{ GenField::notification($message, 'field', true) }}
+				@enderror
+				{{ GenField::input($field) }}
 			@endforeach
+
 			{{-- Submit --}}
-			{{ GenField::input('submit', '', __('Add Item')) }}
+			{{ GenField::input([
+				'type' => 'submit',
+				'key' => 'add_item',
+				'label' => __('Add Item'),
+				'class' => Field::fieldClass()['button']
+			]) }}
 		{{ Form::close() }}
 	</div>
 </div>

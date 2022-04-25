@@ -20,10 +20,12 @@
     <!-- Styles -->
     <link href="{{ mix('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
+    <link href="{{ asset('selectize/css/selectize.bootstrap3.css') }}" rel="stylesheet">
+    <link href="{{ asset('selectize/css/selectize-helper.css') }}" rel="stylesheet">
 </head>
 <body class="dashboard bg-gray-100 h-screen antialiased leading-none font-sans">
-    <header class="z-20">
-        <div class="fixed bg-gray-800 w-full py-4 top-0">
+    <header>
+        <div class="fixed bg-gray-800 w-full py-4 top-0 z-20">
             <div class="mx-auto flex justify-between items-center px-6 relative">
                 <div>
                     <a href="{{ url('dashboard') }}" class="text-lg font-semibold text-gray-100 no-underline">
@@ -67,12 +69,19 @@
             @if(Auth::check() && Auth::user()->role != 'customer')
                 @include('dashboard.nav.navigation')
             @endif           
-            <div id="content" class="bg-gray-100 w-full mt-24 p-4 pb-24 sm:mt-20">
-                @yield('content')
+            <div id="content" class="bg-gray-100 w-full p-3 py-24 lg:py-24">
+                <div class="py-2">
+                    @yield('content')
+                </div>
             </div>            
         </div>
     </main>
-    @yield('footer_script')
+    @if (request()->is('reports') || request()->is('orders'))
+    <script src="{{ Helper::datepickerSrc() }}" defer></script>
+    @endif
     <script src="{{ asset('js/scripts.js') }}" defer></script>
+    <script src="{{ asset('selectize/js/selectize.min.js') }}" defer></script>
+    <script src="{{ asset('selectize/js/selectize-helper.js') }}" defer></script>
+    @yield('footer_script')
 </body>
 </html>

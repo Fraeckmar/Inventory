@@ -1,11 +1,9 @@
 @extends('dashboard.index')
 
 @section('content')
-<section class="container mx-auto p-0 sm:p-0 font-mono">
+<section class="container overflow-hidden md:overflow-x-scroll w-full lg:s-auto mx-auto p-0 sm:p-0 font-mono z-20">
 	<div class="row">
-		<div class="w-full mb-8 overflow-auto md:overflow-hidden rounded-lg shadow-lg">
-			{!! $dataTable->draw() !!}
-		</div>
+		{!! $dataTable->draw() !!}
 	</div>
 </section>
 @endsection

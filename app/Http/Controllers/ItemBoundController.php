@@ -11,6 +11,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Response;
 use App\Datatable\Datatable;
 use Field;
+use App\Helpers\Helper;
 
 class ItemBoundController extends Controller
 {
@@ -19,8 +20,54 @@ class ItemBoundController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+
+    public function index(Request $request)
     {
+        $where_clase = "";
+        if ($request->filled('item')) {
+            
+        }
+        if(empty($where_clase)) {
+            $where_clase = "items.id IS NOT NULL";
+        }        
+
+        $items = Item::whereRaw($where_clase)->get()->toArray();
+        $items = array_reduce($items, function($carry, $item){
+            $carry[$item['id']] = $item;
+            return $carry;
+        });
+        $customers = User::where('role', 'customer')->get()->toArray();
+        $customers = array_reduce($customers, function($carry, $customer){
+            $carry[$customer['id']] = $customer;
+            return $carry;
+        });
+
+        $selectize_customers = array_reduce($customers, function($carry, $customer){
+            $carry[$customer['id']] = $customer['name'];
+            return $carry;
+        });
+        $selectize_customers = ['' => 'All Customer..'] + $selectize_customers;
+
+        $selectize_items = array_reduce($items, function($carry, $item){
+            $carry[$item['id']] = $item['item'];
+            return $carry;
+        });
+        $selectize_items = ['' => 'All Items..'] + $selectize_items;
+
+        if (!empty($s)) {
+        }
+
+        $tbl_column_values = ItemBound::where('type', 'outbound')->get()->toArray();
+        $tbl_column_values = array_reduce($tbl_column_values, function($carry, $order) use($customers, $items){
+            $customer_id = $order['customer'];
+            $item_id = $order['item'];
+            $order['created_at'] = date('y-m-d', strtotime($order['created_at']));
+            $order['item'] = array_key_exists($item_id, $items) ? $items[$item_id]['item'] : $order['item'];
+            $order['customer'] = array_key_exists($customer_id, $customers) ? $customers[$customer_id]['name'] : $order['customer'];
+            $carry[] = $order;
+            return $carry;
+        });
+
         $tbl_column_fields = [
             [
                 'heading' => __('Item'),
@@ -48,6 +95,7 @@ class ItemBoundController extends Controller
                 'td_class' => 'text-sm'
             ]
         ];
+
         $tbl_actions = [
             [
                 'action' => 'edit',
@@ -66,32 +114,41 @@ class ItemBoundController extends Controller
             ],
         ];
 
-        $items = Item::all()->toArray();
-        $items = array_reduce($items, function($carry, $item){
-            $carry[$item['id']] = $item;
-            return $carry;
-        });
-        $customers = User::where('role', 'customer')->get()->toArray();
-        $customers = array_reduce($customers, function($carry, $customer){
-            $carry[$customer['id']] = $customer;
-            return $carry;
-        });
-
-        $tbl_column_values = ItemBound::where('type', 'outbound')->get()->toArray();
-        $tbl_column_values = array_reduce($tbl_column_values, function($carry, $order) use($customers, $items){
-            $customer_id = $order['customer'];
-            $item_id = $order['item'];
-            $order['created_at'] = date('y-m-d', strtotime($order['created_at']));
-            $order['item'] = array_key_exists($item_id, $items) ? $items[$item_id]['item'] : $order['item'];
-            $order['customer'] = array_key_exists($customer_id, $customers) ? $customers[$customer_id]['name'] : $order['customer'];
-            $carry[] = $order;
-            return $carry;
-        });
+        $table_filters = [
+            [
+                'type' => 'date',
+                'key' => 'date',
+                'value' => '',
+                'placeholder_c1' => 'Date From',
+                'placeholder_c2' => 'Date To',
+                'class' => 'bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500',
+                'wrap_class' => 'w-full md:w-1/3 lg:w-64'
+            ],
+            [
+                'type' => 'select',
+                'key' => 'customer',
+                'label' => __('Customer'),
+                'value' => '',
+                'options' => $selectize_customers,
+                'class' => 'selectize px-4 py-2 w-full text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none',
+                'wrap_class' => 'w-full md:w-1/4 lg:w-48'
+            ],
+            [
+                'type' => 'select',
+                'key' => 'item',
+                'label' => __('Items'),
+                'value' => '',
+                'options' => $selectize_items,
+                'class' => 'selectize px-4 py-2 w-full text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none',
+                'wrap_class' => 'w-full md:w-1/4 lg:w-48'
+            ]
+        ];
         
-        $dataTable = new Datatable();
+        $dataTable = new Datatable('Order #');
         $dataTable->set_table_column_fields($tbl_column_fields);
         $dataTable->set_table_column_values($tbl_column_values);
         $dataTable->set_table_actions($tbl_actions);
+        $dataTable->set_table_filters($table_filters);
         return view('order.list', ['dataTable' => $dataTable]);
     }
 
@@ -173,96 +230,6 @@ class ItemBoundController extends Controller
 
         // Return after successfully save
         return back()->with('success', $itemBoundSuccessMsg);
-    }
-
-    function report()
-    {
-        $type_options = Field::itemBoundTypes();
-        $type_options = array_combine($type_options, $type_options);
-        return view('items.report', [
-            'customers' => User::where('role', 'customer')->get(),
-            'type_options' => $type_options
-        ]);
-    }
-
-    function generate_report(Request $request)
-    {
-        $where_clase = "item_bounds.id IS NOT NULL";
-        if ($request->has('date_from') && $request->has('date_to') && !empty($request->date_from) && !empty($request->date_to)) {
-            $date_from = date('Y-m-d', strtotime($request->date_from));
-            $date_to = date('Y-m-d', strtotime($request->date_to));
-            $where_clase .= !empty($where_clase) ? " AND" : "";
-            $where_clase .= " item_bounds.created_at >= '".$date_from."' AND item_bounds.created_at <= '".$date_to."'";
-        }
-        if ($request->has('customer') && !empty($request->customer)) {
-            $where_clase .= !empty($where_clase) ? " AND" : "";
-            $where_clase .= " `customer` = ".$request->customer;
-        }
-
-        if ($request->has('type') && !empty($request->type)) {
-            $where_clase .= !empty($where_clase) ? " AND" : "";
-            $where_clase .= " item_bounds.type = '".strtolower($request->type)."'";
-        }
-
-        $item_bounds = ItemBound::whereRaw($where_clase)->get()->toArray();        
-        $fields = Field::boundFields('outbound');
-        $fields['created_at'] = ['label' => __('Date')];
-        $customers = User::where('role', 'customer')->get()->toArray();
-        $customers = array_reduce($customers, function($carry, $customer){
-            $carry[$customer['id']] = $customer['name'];
-            return $carry;
-        });
-
-        $items = Item::all()->toArray();
-        $items = array_reduce($items, function($carry, $item){
-            $carry[$item['id']] = $item['item'];
-            return $carry;
-        });
-
-        $header = "";
-        if (!empty($fields)) {
-            foreach ($fields as $field_key => $field) {
-                $header .= !empty($header) ? ',' : '';
-                $header .= '"'.$field['label'].'"';
-            }
-        }
-        $data_options = [
-            'customer' => $customers,
-            'item' => $items
-        ];
-        $csv_content = $header."\r\n";
-
-        if (!empty($item_bounds)) {
-            foreach ($item_bounds as $item) {
-                $csv_content_line = '';
-                foreach ($fields as $item_key => $field) {                    
-                    $value = $item[$item_key];
-                    if (in_array($item_key, ['item', 'customer'])) {
-                        if (array_key_exists($value, $data_options[$item_key])) {
-                            $value = $data_options[$item_key][$value];                            
-                        }                        
-                    }
-                    if ($item_key == 'created_at') {
-                        $value = date('Y-m-d', strtotime($value));
-                    }
-                    $csv_content_line .= !empty($csv_content_line) ? ',' : '';
-                    $csv_content_line .= '"'.$value.'"';
-                }
-                $csv_content .= $csv_content_line."\r\n";
-            }
-        }
-        ob_get_clean();
-        $fileName = 'Item-Orders-'.date('Ymdhis').'.csv';
-        $filepath = storage_path('tmp').'/'.$fileName;
-        $csv_file=fopen($filepath,"wb");
-        fwrite($csv_file, $csv_content);
-        fclose($csv_file);
-        chmod($filepath, 0755);
-        if (!empty($item_bounds)) {
-            return Response::download($filepath, $fileName);
-        }
-        return redirect()->back()->with('error', __('No Result Found!'));
-        
     }
 
     /**
@@ -364,5 +331,95 @@ class ItemBoundController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    function report()
+    {
+        $type_options = Field::itemBoundTypes();
+        $type_options = array_combine($type_options, $type_options);
+        return view('items.report', [
+            'customers' => User::where('role', 'customer')->get(),
+            'type_options' => $type_options
+        ]);
+    }
+
+    function generate_report(Request $request)
+    {
+        $where_clase = "item_bounds.id IS NOT NULL";
+        if ($request->has('date_from') && $request->has('date_to') && !empty($request->date_from) && !empty($request->date_to)) {
+            $date_from = date('Y-m-d', strtotime($request->date_from));
+            $date_to = date('Y-m-d', strtotime($request->date_to));
+            $where_clase .= !empty($where_clase) ? " AND" : "";
+            $where_clase .= " item_bounds.created_at >= '".$date_from."' AND item_bounds.created_at <= '".$date_to."'";
+        }
+        if ($request->has('customer') && !empty($request->customer)) {
+            $where_clase .= !empty($where_clase) ? " AND" : "";
+            $where_clase .= " `customer` = ".$request->customer;
+        }
+
+        if ($request->has('type') && !empty($request->type)) {
+            $where_clase .= !empty($where_clase) ? " AND" : "";
+            $where_clase .= " item_bounds.type = '".strtolower($request->type)."'";
+        }
+
+        $item_bounds = ItemBound::whereRaw($where_clase)->get()->toArray();        
+        $fields = Field::boundFields('outbound');
+        $fields['created_at'] = ['label' => __('Date')];
+        $customers = User::where('role', 'customer')->get()->toArray();
+        $customers = array_reduce($customers, function($carry, $customer){
+            $carry[$customer['id']] = $customer['name'];
+            return $carry;
+        });
+
+        $items = Item::all()->toArray();
+        $items = array_reduce($items, function($carry, $item){
+            $carry[$item['id']] = $item['item'];
+            return $carry;
+        });
+
+        $header = "";
+        if (!empty($fields)) {
+            foreach ($fields as $field_key => $field) {
+                $header .= !empty($header) ? ',' : '';
+                $header .= '"'.$field['label'].'"';
+            }
+        }
+        $data_options = [
+            'customer' => $customers,
+            'item' => $items
+        ];
+        $csv_content = $header."\r\n";
+
+        if (!empty($item_bounds)) {
+            foreach ($item_bounds as $item) {
+                $csv_content_line = '';
+                foreach ($fields as $item_key => $field) {                    
+                    $value = $item[$item_key];
+                    if (in_array($item_key, ['item', 'customer'])) {
+                        if (array_key_exists($value, $data_options[$item_key])) {
+                            $value = $data_options[$item_key][$value];                            
+                        }                        
+                    }
+                    if ($item_key == 'created_at') {
+                        $value = date('Y-m-d', strtotime($value));
+                    }
+                    $csv_content_line .= !empty($csv_content_line) ? ',' : '';
+                    $csv_content_line .= '"'.$value.'"';
+                }
+                $csv_content .= $csv_content_line."\r\n";
+            }
+        }
+        ob_get_clean();
+        $fileName = 'Item-Orders-'.date('Ymdhis').'.csv';
+        $filepath = storage_path('tmp').'/'.$fileName;
+        $csv_file=fopen($filepath,"wb");
+        fwrite($csv_file, $csv_content);
+        fclose($csv_file);
+        chmod($filepath, 0755);
+        if (!empty($item_bounds)) {
+            return Response::download($filepath, $fileName);
+        }
+        return redirect()->back()->with('error', __('No Result Found!'));
+        
     }
 }

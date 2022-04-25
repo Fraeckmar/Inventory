@@ -53,6 +53,7 @@ Route::get('/inbound', [ItemBoundController::class, 'inbound']);
 Route::get('/outbound', [ItemBoundController::class, 'outbound']);
 // Orders
 Route::get('/orders', [ItemBoundController::class, 'index']);
+Route::post('/orders', [ItemBoundController::class, 'index']);
 // Setting
 Route::get('/settings', [Settings::class, 'page']);
 Route::post('/save-settings', [Settings::class, 'save']);

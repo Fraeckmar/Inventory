@@ -8,8 +8,9 @@
 	<h1 class="bg-blue-100 block w-full text-center text-xl font-medium uppercase p-4">{{ __('Edit Item') }}</h1>
 	<div class="p-4">
 		{!! Form::open(['action'=>['App\Http\Controllers\ItemBoundController@update',$itemBound->id], 'method'=>'put']) !!}
-			@foreach ( Field::boundFields('outbound') as $key => $field )
+			@foreach ( Field::boundFields('outbound') as $field )
 				@php
+					$key = $field['key'];
                     $options = [];
                     if ($field['type'] == 'select') {
                         if ($key == 'customer') {
@@ -19,18 +20,22 @@
                             $options = $items;
                         }
                     }
+					$field['value'] = $itemBound->$key;
+					$field['options'] = $options;
 				@endphp
-				<div class="mb-3">
-					{{ Form::label($key, $field['label'], ['class'=>$field['label_class']]) }}
-					{{ GenField::input($field['type'], $key, $itemBound->$key, $field['class'], $options) }}
-
-					@error($key)
-						{{ GenField::notification($message, 'field') }}
-					@enderror
-				</div>
+				@error($key)
+					{{ GenField::notification($message, 'field', true) }}
+				@enderror
+				{{ GenField::input($field) }}
 			@endforeach
+
 			{{-- Submit --}}
-			{{ GenField::input('submit', '', __('Update Item')) }}
+			{{ GenField::input([
+				'type' => 'submit',
+				'key' => 'edit_order',
+				'label' => __('Update Order'),
+				'class' => Field::fieldClass()['button']
+			]) }}
 		{!! Form::close() !!}
 	</div>
 </div>

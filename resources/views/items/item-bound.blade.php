@@ -18,25 +18,28 @@
 				<input type="hidden" name="type" value="{{ $type }}"/>
 				@foreach ( Field::boundFields($type) as $key => $field )
 					@php
-						$option = [];
+						$options = [];
 						if($key == 'item' && !empty($items)){
-							$option = $items;
+							$options = $items;
 						}
 						if($key == 'customer' && !empty($customers)){
-							$option = $customers;
+							$options = $customers;
 						}
+						$field['options'] = $options;
 					@endphp
-					<div class="mb-5">
-						{{ Form::label($key, $field['label'], ['class'=>$field['label_class']]) }}
-						{{ GenField::input($field['type'], $key, '', $field['class'], $option) }}
-	
-						@error($key)
-							{{ GenField::notification($message, 'error', true) }}
-						@enderror
-					</div>
+					@error($key)
+						{{ GenField::notification($message, 'field', true) }}
+					@enderror
+					{{ GenField::input($field) }}
 				@endforeach
+
 				{{-- Submit --}}
-				{{ GenField::input('submit', '', __('Submit')) }}
+				{{ GenField::input([
+					'type' => 'submit',
+					'key' => 'update_item',
+					'label' => __('Submit'),
+					'class' => Field::fieldClass()['button']
+				]) }}
 			{!! Form::close() !!}
 		</div>
 	</div>
