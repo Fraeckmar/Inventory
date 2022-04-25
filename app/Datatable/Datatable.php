@@ -98,7 +98,7 @@ class Datatable {
                                     $html .= '</div>';
                                 }
                                 $html .= '<div class="w-full lg:w-24 sm:w-1/4">';
-                                    $html .= '<button type="submit" class="py-2.5 flex items-center justify-center w-full border bg-blue-600 text-white hover:bg-white hover:text-blue-600 hover:border-blue-400 transition duration-300 ease-in-out"> Filter </button>';
+                                    $html .= '<button type="submit" class="rounded py-3 md:py-2.5 flex items-center justify-center w-full border bg-blue-600 text-white hover:bg-white hover:text-blue-600 hover:border-blue-400 transition duration-300 ease-in-out"> Filter </button>';
                                 $html .= '</div>';
                                 
                             $html .= '</div>';
@@ -111,10 +111,10 @@ class Datatable {
                             $html .= csrf_field();
                             $html .= '<div class="block md:flex">';
                                 $html .= '<div class="w-full sm:w-3/4">';
-                                    $html .= '<input type="txt" id="search_item" name="search_item" placeholder="Search '.ucwords($this->model).'.." class="p-1.5 w-full text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"/>';
+                                    $html .= '<input type="txt" id="search_item" name="search_item" placeholder="Search '.ucwords($this->model).'.." class="p-1.5 mb-1 w-full text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"/>';
                                 $html .= '</div>';
                                 $html .= '<div class="w-full lg:w-24 sm:w-1/4">';
-                                    $html .= '<button type="submit" class="py-2.5 flex items-center justify-center w-full border bg-blue-600 text-white hover:bg-white hover:text-blue-600 hover:border-blue-400 transition duration-300 ease-in-out">';
+                                    $html .= '<button type="submit" class="rounded py-3 md:py-2.5 flex items-center justify-center w-full border bg-blue-600 text-white hover:bg-white hover:text-blue-600 hover:border-blue-400 transition duration-300 ease-in-out">';
                                         $html .= '<span class="pr-2"></span><i class="fa fa-search w-full"></i>';
                                     $html .= '</button>';
                                 $html .= '</div>';

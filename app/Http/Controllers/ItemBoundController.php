@@ -121,7 +121,7 @@ class ItemBoundController extends Controller
                 'value' => '',
                 'placeholder_c1' => 'Date From',
                 'placeholder_c2' => 'Date To',
-                'class' => 'bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500',
+                'class' => 'bg-gray-50 pl-10 py-2 lg:py-2 mb-1 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500',
                 'wrap_class' => 'w-full md:w-1/3 lg:w-64'
             ],
             [
@@ -130,7 +130,7 @@ class ItemBoundController extends Controller
                 'label' => __('Customer'),
                 'value' => '',
                 'options' => $selectize_customers,
-                'class' => 'selectize px-4 py-2 w-full text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none',
+                'class' => 'selectize px-4 py-3 lg:p-2 mb-1 w-full text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none',
                 'wrap_class' => 'w-full md:w-1/4 lg:w-48'
             ],
             [
@@ -139,7 +139,7 @@ class ItemBoundController extends Controller
                 'label' => __('Items'),
                 'value' => '',
                 'options' => $selectize_items,
-                'class' => 'selectize px-4 py-2 w-full text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none',
+                'class' => 'selectize py-3 lg:p-2 mb-1 w-full text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none',
                 'wrap_class' => 'w-full md:w-1/4 lg:w-48'
             ]
         ];
