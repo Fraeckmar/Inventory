@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\log;
+use App\Models\User;
 
 class AuthController extends Controller
 {
@@ -15,9 +17,18 @@ class AuthController extends Controller
             'email' => ['required'],
             'password' => ['required']
         ]);
+        $log = new Log();
+        $log->ip = $request->ip();
         if(!Auth::attempt($credentials)) {
+            $log->action_type = 'login_unsuccessful';
+            $log->save();
             return redirect('login')->withErrors('Username or Password is not correct!');
         }
+        $log->action_type = 'login_successful';
+        $log->user_id = Auth::id();
+        $user = User::where('id', Auth::id())->get('name')->first();
+        $log->user_name = !empty($user) ? $user->name : '';
+        $log->save();
         return redirect('dashboard');
     }
 
