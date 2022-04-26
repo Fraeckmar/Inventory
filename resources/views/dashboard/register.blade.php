@@ -64,7 +64,7 @@
 					<div class="mb-4">
 						<label for="role" class="text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">{{ __('Role') }}</label>
 						<select name="role" class="block border border-grey-light w-full p-3 rounded mb-4">
-							<option>{{ __('Choose..') }}</option>
+							<option value="">{{ __('Choose..') }}</option>
 							@foreach (Field::customerRoles() as $key => $role )
 								<option value="{{ $key }}">{{ $role }}</option>
 							@endforeach					

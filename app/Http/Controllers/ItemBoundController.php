@@ -15,49 +15,83 @@ use App\Helpers\Helper;
 
 class ItemBoundController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
+    private function update_order_number($order_number)
+    {
+        if (empty($order_number)) { return false; }
+        $item = ItemBound::where('order_number', $order_number)->get('id')->first();
+        if ($item) {
+            $itemBound = ItemBound::findOrFail($item->id);
+            $itemBound->order_number = $order_number;
+            $itemBound->save();
+            return $item->id;
+        }
+        return false;
+    }
 
     public function index(Request $request)
     {
-        $where_clase = "";
-        if ($request->filled('item')) {
-            
-        }
-        if(empty($where_clase)) {
-            $where_clase = "items.id IS NOT NULL";
-        }        
+        $selectize_customers = [];
+        $selectize_items = [];
+        $item_where_clase = '';       
+           
+        if(empty($item_where_clase)) {
+            $item_where_clase = "items.id IS NOT NULL";
+        }    
 
-        $items = Item::whereRaw($where_clase)->get()->toArray();
-        $items = array_reduce($items, function($carry, $item){
-            $carry[$item['id']] = $item;
-            return $carry;
-        });
+        $items = Item::whereRaw($item_where_clase)->get()->toArray();
+        if (!empty($items)) {
+            $items = array_reduce($items, function($carry, $item){
+                $carry[$item['id']] = $item;
+                return $carry;
+            });
+            $selectize_items = array_reduce($items, function($carry, $item){
+                $carry[$item['id']] = $item['item'];
+                return $carry;
+            });
+        }
+        
         $customers = User::where('role', 'customer')->get()->toArray();
-        $customers = array_reduce($customers, function($carry, $customer){
-            $carry[$customer['id']] = $customer;
-            return $carry;
-        });
+        if (!empty($customers)) {
+            $customers = array_reduce($customers, function($carry, $customer){
+                $carry[$customer['id']] = $customer;
+                return $carry;
+            });
+            $selectize_customers = array_reduce($customers, function($carry, $customer){
+                $carry[$customer['id']] = $customer['name'];
+                return $carry;
+            });    
+        }
+        
+        $selectize_customers = ['' => 'Customer'] + $selectize_customers;
+        $selectize_items = ['' => 'Item'] + $selectize_items;
 
-        $selectize_customers = array_reduce($customers, function($carry, $customer){
-            $carry[$customer['id']] = $customer['name'];
-            return $carry;
-        });
-        $selectize_customers = ['' => 'All Customer..'] + $selectize_customers;
-
-        $selectize_items = array_reduce($items, function($carry, $item){
-            $carry[$item['id']] = $item['item'];
-            return $carry;
-        });
-        $selectize_items = ['' => 'All Items..'] + $selectize_items;
-
-        if (!empty($s)) {
+        // Filters
+        $order_where_clase = "item_bounds.type = 'outbound'";
+        if ($request->filled('type')) {
+            $order_where_clase = "item_bounds.type = '{$request->type}'";
+        }
+        if ($request->filled('_search')) {
+            $order_where_clase .= " AND item_bounds.order_number = '{$request->_search}'";
+        }
+        if ($request->filled('item')) {
+            $order_where_clase .= " AND item_bounds.item = '{$request->item}'";
+        }
+        if ($request->filled('customer')) {
+            $order_where_clase .= " AND item_bounds.customer = '{$request->customer}'";
+        }
+        if ($request->filled('date_to') && $request->filled('date_from')) {
+            $date_from = date('Y-m-d', strtotime('-1 day', strtotime($request->date_from)));
+            $date_to = date('Y-m-d', strtotime($request->date_to));
+            $order_where_clase .= " AND item_bounds.created_at BETWEEN '{$date_from}' AND '{$date_to}'";
         }
 
-        $tbl_column_values = ItemBound::where('type', 'outbound')->get()->toArray();
+        DB::enableQueryLog();
+        $tbl_column_values = ItemBound::whereRaw($order_where_clase)->get()->toArray();
+        
+        // $query = DB::getQueryLog();
+        // echo $query[0]['query'];
+        // die();
         $tbl_column_values = array_reduce($tbl_column_values, function($carry, $order) use($customers, $items){
             $customer_id = $order['customer'];
             $item_id = $order['item'];
@@ -70,9 +104,14 @@ class ItemBoundController extends Controller
 
         $tbl_column_fields = [
             [
+                'heading' => __('Order #'),
+                'key' => 'order_number',
+                'td_class' => 'font-semibold text-sm'
+            ],
+            [
                 'heading' => __('Item'),
                 'key' => 'item',
-                'td_class' => 'font-semibold text-sm'
+                'td_class' => 'text-sm'
             ],
             [
                 'heading' => __('Qty'),
@@ -131,7 +170,7 @@ class ItemBoundController extends Controller
                 'value' => '',
                 'options' => $selectize_customers,
                 'class' => 'selectize px-4 py-3 lg:p-2 mb-1 w-full text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none',
-                'wrap_class' => 'w-full md:w-1/4 lg:w-48'
+                'wrap_class' => 'w-full md:w-1/4 lg:w-36'
             ],
             [
                 'type' => 'select',
@@ -140,8 +179,17 @@ class ItemBoundController extends Controller
                 'value' => '',
                 'options' => $selectize_items,
                 'class' => 'selectize py-3 lg:p-2 mb-1 w-full text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none',
-                'wrap_class' => 'w-full md:w-1/4 lg:w-48'
-            ]
+                'wrap_class' => 'w-full md:w-1/4 lg:w-36'
+            ],
+            [
+                'type' => 'select',
+                'key' => 'type',
+                'label' => __('Type'),
+                'value' => '',
+                'options' => ['outbound' => 'Outbound', 'inbound' => 'Inbound'],
+                'class' => 'selectize py-3 lg:p-2 mb-1 w-full text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none',
+                'wrap_class' => 'w-full md:w-1/4 lg:w-36'
+            ],
         ];
         
         $dataTable = new Datatable('Order #');
@@ -204,9 +252,16 @@ class ItemBoundController extends Controller
         $request->validate($fields);
         $type = $request->type;
         $remarks = $request->has('remarks')? $request->remarks : '';
+        $lastOrder = ItemBound::where('type', $type)->orderBy('id', 'DESC')->get('order_number')->first();
+        $order_number = ($lastOrder) ? $int = (int) filter_var($lastOrder->order_number, FILTER_SANITIZE_NUMBER_INT) : 0;
+        $order_number ++;
+        $order_number = str_pad($order_number, 6, '0', STR_PAD_LEFT);
+        $prefix = ($type == 'inbound') ? 'IN' : 'OUT';
+        $order_number = $prefix.$order_number;
         // Save Inbound
         $itemBound = new ItemBound();
-        $itemBound->item = $request->item;        
+        $itemBound->order_number = $order_number;
+        $itemBound->item = $request->item;     
         $itemBound->qty = $request->qty;
         $itemBound->type = $request->type;
         $itemBound->customer = $request->customer;
@@ -216,13 +271,12 @@ class ItemBoundController extends Controller
 
         // Update Item balance
         $item = Item::find($request->item);
-        $itemBoundSuccessMsg = __('Inbound successfully!');
+        $itemBoundSuccessMsg = 'Order <strong>'.$order_number.'</strong> created successfully!';
         if($type == 'outbound'){
             if($item->balance < $request->qty){
                 return back()->with('error', 'Error! The quantity must less than or equal to item current balance.');
             }
-            $item->balance -= $request->qty;
-            $itemBoundSuccessMsg = __('Outbound successfully!');
+            $item->balance -= $request->qty; 
         }else{
             $item->balance += $request->qty;
         }        
