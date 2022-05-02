@@ -60,7 +60,10 @@ class PageController extends Controller
     // registration
 	public function register()
 	{
-		return view('dashboard.register');
+        $admin_users = User::where('role', 'administrator')->get()->toArray();
+		return view('dashboard.register', [
+            'admin_users' => $admin_users
+        ]);
 	}
 
     // Login

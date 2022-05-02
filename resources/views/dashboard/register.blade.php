@@ -66,6 +66,9 @@
 						<select name="role" class="block border border-grey-light w-full p-3 rounded mb-4">
 							<option value="">{{ __('Choose..') }}</option>
 							@foreach (Field::customerRoles() as $key => $role )
+								@if (!empty($admin_users) && $key == 'administrator')
+									@php continue @endphp
+								@endif
 								<option value="{{ $key }}">{{ $role }}</option>
 							@endforeach					
 						</select>
