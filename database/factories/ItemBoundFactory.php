@@ -44,7 +44,7 @@ class ItemBoundFactory extends Factory
             'item' => $order_items,
             'type' => $type,
             'customer'=> $customer_id,
-            'Remarks' => 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+            'remarks' => 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
             'updated_by' => $admin_id
         ];
     }
