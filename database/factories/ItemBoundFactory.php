@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use Faker\Core\Number;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Helpers\Order;
 use App\Models\Item;
@@ -28,7 +27,7 @@ class ItemBoundFactory extends Factory
         $order_number = str_pad($order_number, 8, '0', STR_PAD_LEFT);
         $prefix = ($type == 'inbound') ? 'IN' : 'OUT';
         $order_number = $prefix.$order_number;
-        
+
         $order_items = [];
         $no_of_orders = rand(1, 3);
         for ($i=0; $i<$no_of_orders; $i++) {
