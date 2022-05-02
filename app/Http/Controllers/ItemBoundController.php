@@ -79,7 +79,7 @@ class ItemBoundController extends Controller
             $order_where_clause .= " AND item_bounds.order_number = '{$request->_search}'";
         }
         if ($request->filled('item')) {
-            $order_where_clause .= " AND item_bounds.item = '{$request->item}'";
+            $order_where_clause .= " AND item_bounds.item LIKE '%{$request->item}%'";
         }
         if ($request->filled('customer')) {
             $order_where_clause .= " AND item_bounds.customer = '{$request->customer}'";
