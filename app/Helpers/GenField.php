@@ -14,20 +14,24 @@ class GenField
         $value = array_key_exists('value', $field) ? $field['value'] : '';
         $options = array_key_exists('options', $field) ? $field['options'] : [];
         $label_class = array_key_exists('label_class', $field) ? $field['label_class'] : '';
+        $required = array_key_exists('required', $field) ? $field['required'] : '';
+        $attribues = array_key_exists('attribues', $field) ? $field['attribues'] : '';
+        $attribues .= $required;
         $class = array_key_exists('class', $field) ? $field['class'] : '';
+        $container_class = array_key_exists('container_class', $field) ? $field['container_class'] : '';
         $options = [ '' => 'Choose..'] + $options;
-
-        $html = '<div class="form-group mb-3">';
+        $container_margin = !in_array($type, ['submit', 'button']) ? 'mb-3' : '';
+        $html = '<div class="form-group '.$container_margin.' '.$container_class.'">';
         if (in_array($field['type'], array('text', 'number'))) {
             $html .= '<label for="'.$key.'" class="'.$label_class.'">'.$label.'</label>';
-            $html .= '<input type="'.$type.'" id="'.$key.'" name="'.$key.'" value="'.$value.'" class="'.$class.'"/>';
+            $html .= '<input type="'.$type.'" id="'.$key.'" name="'.$key.'" value="'.$value.'" class="'.$class.'" '.$attribues.'/>';
         }
         if (in_array($type, array('submit', 'button'))) {
-            $html .= '<button type="'.$type.'" id="'.$key.'" class="'.$class.'">'.$label.'</button>';
+            $html .= '<button type="'.$type.'" id="'.$key.'" class="'.$class.'" '.$attribues.'>'.$label.'</button>';
         }
         if ($type == 'select') {
             $html .= '<label for="'.$key.'" class="'.$label_class.'">'.$label.'</label>';
-            $html .= '<select id="'.$key.'" name="'.$key.'" class="'.$class.'">';
+            $html .= '<select id="'.$key.'" name="'.$key.'" class="'.$class.'" '.$attribues.'>';
                 foreach ($options as $op_value => $op_label) {
                     $selected = $op_value == $value ? 'selected' : '';
                     $html .= '<option value="'.$op_value.'" '.$selected.'>'.$op_label.'</option>';
@@ -35,7 +39,7 @@ class GenField
             $html .= '</select>';
         }
         if ($type == 'textarea') {
-            $html .= '<label for="'.$key.'" class="'.$label_class.'">'.$label.'</label>';
+            $html .= '<label for="'.$key.'" class="'.$label_class.'" '.$attribues.'>'.$label.'</label>';
             $html .= '<textarea row="3" id="'.$key.'" name="'.$key.'" class="'.$class.'">'.$value.'</textarea>';
         }
         $html .= '</div>';

@@ -11,7 +11,11 @@ use App\Models\User;
 use Illuminate\Support\Facades\Response;
 use App\Datatable\Datatable;
 use Field;
-use App\Helpers\Helper;
+use App\Helpers\Order;
+use Exception;
+use Faker\Core\Number;
+use Format;
+use Helper;
 
 class ItemBoundController extends Controller
 {
@@ -67,55 +71,70 @@ class ItemBoundController extends Controller
         $selectize_items = ['' => 'Item'] + $selectize_items;
 
         // Filters
-        $order_where_clase = "item_bounds.type = 'outbound'";
+        $order_where_clause = "item_bounds.type = 'outbound'";
         if ($request->filled('type')) {
-            $order_where_clase = "item_bounds.type = '{$request->type}'";
+            $order_where_clause = "item_bounds.type = '{$request->type}'";
         }
         if ($request->filled('_search')) {
-            $order_where_clase .= " AND item_bounds.order_number = '{$request->_search}'";
+            $order_where_clause .= " AND item_bounds.order_number = '{$request->_search}'";
         }
         if ($request->filled('item')) {
-            $order_where_clase .= " AND item_bounds.item = '{$request->item}'";
+            $order_where_clause .= " AND item_bounds.item = '{$request->item}'";
         }
         if ($request->filled('customer')) {
-            $order_where_clase .= " AND item_bounds.customer = '{$request->customer}'";
+            $order_where_clause .= " AND item_bounds.customer = '{$request->customer}'";
         }
         if ($request->filled('date_to') && $request->filled('date_from')) {
             $date_from = date('Y-m-d', strtotime('-1 day', strtotime($request->date_from)));
-            $date_to = date('Y-m-d', strtotime($request->date_to));
-            $order_where_clase .= " AND item_bounds.created_at BETWEEN '{$date_from}' AND '{$date_to}'";
+            $date_to = date('Y-m-d', strtotime('+1 day', strtotime($request->date_to)));
+            $order_where_clause .= " AND item_bounds.created_at BETWEEN '{$date_from}' AND '{$date_to}'";
         }
 
-        DB::enableQueryLog();
-        $tbl_column_values = ItemBound::whereRaw($order_where_clase)->get()->toArray();
-        
-        // $query = DB::getQueryLog();
-        // echo $query[0]['query'];
-        // die();
+        if (!Helper::auth_is_admin()) {
+            $customer_auth = Auth::id();
+            $order_where_clause = "item_bounds.customer = {$customer_auth}";
+        }
+
+        //DB::enableQueryLog();
+        $itemBounds = ItemBound::whereRaw($order_where_clause)->paginate(25);
+        $tbl_column_values = !empty($itemBounds) ? $itemBounds->toArray()['data'] : [];
+
         $tbl_column_values = array_reduce($tbl_column_values, function($carry, $order) use($customers, $items){
             $customer_id = $order['customer'];
-            $item_id = $order['item'];
-            $order['created_at'] = date('y-m-d', strtotime($order['created_at']));
-            $order['item'] = array_key_exists($item_id, $items) ? $items[$item_id]['item'] : $order['item'];
+            $order_items = unserialize($order['item']);
+            $items_str = [];
+            $unit_qty = 0;
+            $unit_cost = 0;
+            foreach ($order_items as $item) {
+                $item_id = $item['item'];
+                $item_qty = $item['qty'];
+                $unit_qty += $item_qty;
+                $item_price = array_key_exists($item_id, $items) ? $items[$item_id]['price'] : 0;
+                $unit_cost += (float)$item_price * (int)$item_qty;
+                $items_str[] = array_key_exists($item_id, $items) ? $items[$item_id]['item'] : '<span class="bg-red-400 text-white p-1 text-xs rounded">'.__('Deleted').': ID'.$item_id.'</span>';
+            }
+            $items_str = implode(', ', $items_str);
+            $order['item'] = $items_str;
+            $order['qty'] = $unit_qty;
+            $order['unit_cost'] = Format::price($unit_cost);
+            $order['order_number'] = '<a href="'.url('order').'/'.$order['id'].'" class="text-blue-600">'.$order['order_number'].'</a>';
             $order['customer'] = array_key_exists($customer_id, $customers) ? $customers[$customer_id]['name'] : $order['customer'];
             $carry[] = $order;
             return $carry;
         });
 
+        //$query = DB::getQueryLog();
+        //echo $query[0]['query'];
+
         $tbl_column_fields = [
             [
                 'heading' => __('Order #'),
                 'key' => 'order_number',
-                'td_class' => 'font-semibold text-sm'
+                'td_class' => 'font-semibold text-sm w-32'
             ],
             [
                 'heading' => __('Item'),
                 'key' => 'item',
-                'td_class' => 'text-sm'
-            ],
-            [
-                'heading' => __('Qty'),
-                'key' => 'qty',
                 'td_class' => 'text-sm'
             ],
             [
@@ -124,46 +143,67 @@ class ItemBoundController extends Controller
                 'td_class' => 'text-sm'
             ],
             [
-                'heading' => __('Remarks'),
-                'key' => 'remarks',
-                'td_class' => 'text-sm'
+                'heading' => __('Qty'),
+                'key' => 'qty',
+                'td_class' => 'text-sm w-24'
+            ],
+            [
+                'heading' => __('Unit Cost'),
+                'key' => 'unit_cost',
+                'td_class' => 'text-sm w-24'
             ],
             [
                 'heading' => __('Date'),
                 'key' => 'created_at',
-                'td_class' => 'text-sm'
+                'td_class' => 'text-sm w-36'
             ]
+        ];
+
+        $action_variables = [
+            '{id}' => 'id',
+            '{type}' => 'type'
         ];
 
         $tbl_actions = [
             [
                 'action' => 'edit',
-                'model' => 'item-bound',
+                'model' => 'order',
+                'url' => 'order/{id}/edit?type={type}'
             ],
             [
                 'action' => 'delete',
-                'model' => 'item-bound',
+                'model' => 'order',
                 'class' => 'delete-item',
-                'extra' => 'data-label="Are you sure to delete this Item?"'
+                'extra' => 'data-label="Are you sure to delete this Item?" data-form="#delete-order{id}"'
             ],
             [
                 'action' => 'receipt',
-                'model' => 'item-bound',
+                'model' => 'order',
                 'class' => 'item-receipt',
             ],
         ];
 
         $table_filters = [
-            [
+            'date_from' => [
                 'type' => 'date',
-                'key' => 'date',
+                'key' => 'date_from',
                 'value' => '',
-                'placeholder_c1' => 'Date From',
-                'placeholder_c2' => 'Date To',
+                'placeholder' => 'Date From',
                 'class' => 'bg-gray-50 pl-10 py-2 lg:py-2 mb-1 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500',
                 'wrap_class' => 'w-full md:w-1/3 lg:w-64'
             ],
-            [
+            'date_to' => [
+                'type' => 'date',
+                'key' => 'date_to',
+                'value' => '',
+                'placeholder' => 'Date To',
+                'class' => 'bg-gray-50 pl-10 py-2 lg:py-2 mb-1 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500',
+                'wrap_class' => 'w-full md:w-1/3 lg:w-64'
+            ],
+        ];
+
+        if (Helper::auth_is_admin()) {
+            $table_filters['customer'] = [
                 'type' => 'select',
                 'key' => 'customer',
                 'label' => __('Customer'),
@@ -171,8 +211,8 @@ class ItemBoundController extends Controller
                 'options' => $selectize_customers,
                 'class' => 'selectize px-4 py-3 lg:p-2 mb-1 w-full text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none',
                 'wrap_class' => 'w-full md:w-1/4 lg:w-36'
-            ],
-            [
+            ];
+            $table_filters['item'] = [
                 'type' => 'select',
                 'key' => 'item',
                 'label' => __('Items'),
@@ -180,8 +220,8 @@ class ItemBoundController extends Controller
                 'options' => $selectize_items,
                 'class' => 'selectize py-3 lg:p-2 mb-1 w-full text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none',
                 'wrap_class' => 'w-full md:w-1/4 lg:w-36'
-            ],
-            [
+            ];
+            $table_filters['type'] = [
                 'type' => 'select',
                 'key' => 'type',
                 'label' => __('Type'),
@@ -189,14 +229,18 @@ class ItemBoundController extends Controller
                 'options' => ['outbound' => 'Outbound', 'inbound' => 'Inbound'],
                 'class' => 'selectize py-3 lg:p-2 mb-1 w-full text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none',
                 'wrap_class' => 'w-full md:w-1/4 lg:w-36'
-            ],
-        ];
+            ];
+        }
         
-        $dataTable = new Datatable('Order #');
+        $dataTable = new Datatable('order');
         $dataTable->set_table_column_fields($tbl_column_fields);
-        $dataTable->set_table_column_values($tbl_column_values);
-        $dataTable->set_table_actions($tbl_actions);
+        $dataTable->set_table_column_values($tbl_column_values);        
         $dataTable->set_table_filters($table_filters);
+        if (Helper::auth_is_admin()) {
+            $dataTable->set_table_actions($tbl_actions);
+            $dataTable->set_action_variables($action_variables);
+        }        
+        $dataTable->set_pagination_links($itemBounds->toArray());
         return view('order.list', ['dataTable' => $dataTable]);
     }
 
@@ -207,7 +251,7 @@ class ItemBoundController extends Controller
         $itemIDS = array_column($items, 'id');
         $itemNames = array_column($items, 'item');
         $items = array_combine($itemIDS, $itemNames);
-		return view('items.item-bound', [
+		return view('order.order', [
 			'items' => $items,
             'type' => 'inbound',
 		]);
@@ -226,7 +270,7 @@ class ItemBoundController extends Controller
         $customerNames = array_column($customers, 'name');
         $customers = array_combine($customerIDS, $customerNames);
         
-		return view('items.item-bound', [
+		return view('order.order', [
 			'items' => $items,
             'type' => 'outbound',
             'customers' => $customers
@@ -242,8 +286,7 @@ class ItemBoundController extends Controller
     public function store(Request $request)
     {
         $fields = [
-            'item' => 'required',
-            'qty' => 'required|numeric',
+            'items' => 'required',
             'type' => 'required'
         ];
         if ($request->has('customer')) {
@@ -251,36 +294,37 @@ class ItemBoundController extends Controller
         }
         $request->validate($fields);
         $type = $request->type;
-        $remarks = $request->has('remarks')? $request->remarks : '';
-        $lastOrder = ItemBound::where('type', $type)->orderBy('id', 'DESC')->get('order_number')->first();
-        $order_number = ($lastOrder) ? $int = (int) filter_var($lastOrder->order_number, FILTER_SANITIZE_NUMBER_INT) : 0;
-        $order_number ++;
-        $order_number = str_pad($order_number, 6, '0', STR_PAD_LEFT);
-        $prefix = ($type == 'inbound') ? 'IN' : 'OUT';
-        $order_number = $prefix.$order_number;
-        // Save Inbound
-        $itemBound = new ItemBound();
-        $itemBound->order_number = $order_number;
-        $itemBound->item = $request->item;     
-        $itemBound->qty = $request->qty;
-        $itemBound->type = $request->type;
-        $itemBound->customer = $request->customer;
-        $itemBound->remarks = $remarks;
-        $itemBound->updated_by = Auth::id();
-        $itemBound->save();
-
-        // Update Item balance
-        $item = Item::find($request->item);
+        $remarks = $request->has('remarks')? $request->remarks : ''; 
+        $order_number = Order::gen_number($type);
         $itemBoundSuccessMsg = 'Order <strong>'.$order_number.'</strong> created successfully!';
-        if($type == 'outbound'){
-            if($item->balance < $request->qty){
-                return back()->with('error', 'Error! The quantity must less than or equal to item current balance.');
+
+        if (!empty($request->items)) {
+            // Update Item balance
+            foreach ($request->items as $item) {
+                $item_id = $item['item'];
+                $item_qty = $item['qty'];
+                $item = Item::find($item_id);            
+                if($type == 'outbound'){
+                    if($item->balance < $item_qty){
+                        return back()->with('error', 'Error! The quantity must less than or equal to item current balance.');
+                    }
+                    $item->balance -= $item_qty; 
+                }else{
+                    $item->balance += $item_qty;
+                }        
+                $item->save();
             }
-            $item->balance -= $request->qty; 
-        }else{
-            $item->balance += $request->qty;
+
+            // Save Order
+            $itemBound = new ItemBound();
+            $itemBound->order_number = $order_number;
+            $itemBound->item = serialize($request->items);
+            $itemBound->type = $request->type;
+            $itemBound->customer = $request->customer;
+            $itemBound->remarks = $remarks;
+            $itemBound->updated_by = Auth::id();
+            $itemBound->save();            
         }        
-        $item->save();
 
         // Return after successfully save
         return back()->with('success', $itemBoundSuccessMsg);
@@ -294,7 +338,51 @@ class ItemBoundController extends Controller
      */
     public function show($id)
     {
-        //
+        $order = ItemBound::find($id)->toArray();
+        $items = Item::all()->toArray();
+        $items = array_reduce($items, function($carry, $item){
+            $carry[$item['id']] = $item;
+            return $carry;
+        });
+        
+        $total_cost = 0;
+        $item_data = unserialize($order['item']);
+        if (!empty($item_data)) {
+            foreach ($item_data as $item) {
+                $item_id = $item['item'];
+                $item_qty = $item['qty'];
+                $item_price = array_key_exists($item_id, $items) ? $items[$item_id]['price'] : 0;
+                $item_name = array_key_exists($item_id, $items) ? $items[$item_id]['item'] : 0;
+                $unit_cost = $item_qty * $item_price;
+                $total_cost += $unit_cost;
+                $item_array = [
+                    'item' => [
+                        'label' => __('Item'),
+                        'value' => $item_name
+                    ],
+                    'qty' => [
+                        'label' => __('Qty'),
+                        'value' => $item_qty
+                    ],
+                    'cost' => [
+                        'label' => __('Unit Cost'),
+                        'value' => $item_price
+                    ]
+                ];
+                $order['items_data'][] = $item_array;
+            }
+        }
+
+        $customer = User::where('id', $order['customer'])->get()->first();
+        $updated_by = User::where('id', $order['updated_by'])->get()->first();
+        $order['customer'] = !empty($customer) ? $customer->name : '';
+        $order['created_at'] = Format::toDate($order['created_at']);
+        $order['updated_by'] = !empty($updated_by) ? $updated_by->name : '';
+        $order['total_cost'] = Format::price($total_cost);
+
+        return view('order.show', [
+            'order' => $order
+        ]);
     }
 
     /**
@@ -303,7 +391,7 @@ class ItemBoundController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
         if(!Auth::check()){
             return redirect('login');
@@ -319,11 +407,27 @@ class ItemBoundController extends Controller
             $carry[$customer['id']] = $customer['name'];
             return $carry;
         });
-
+        $type = $request->filled('type') ? $request->type : 'outbound';
+        $order = ItemBound::find($id)->toArray();
+        if (!empty($order)) {
+            $items_data = unserialize($order['item']);
+            $items_list = [];
+            foreach ($items_data as $item) {
+                $item_id = $item['item'];
+                $item_qty = $item['qty'];
+                $item_name = array_key_exists($item_id, $items) ? $items[$item_id] : '';
+                $items_list[] = [
+                    'item' => $item_id,
+                    'qty' => $item_qty
+                ];
+            }
+        }
+        $order['items'] = $items_list;
         return view('order.edit', [
-            'itemBound' => ItemBound::find($id),
+            'order' => $order,
             'items' => $items,
-            'customers' => $customers
+            'customers' => $customers,
+            'type' => $type
         ]);
     }
 
@@ -373,7 +477,7 @@ class ItemBoundController extends Controller
         }
         $item->balance = $new_balance;
         $item->save();
-        return redirect('item-bound/'.$id.'/edit')->with('success', 'Order update successfully!');
+        return redirect('order/'.$id.'/edit')->with('success', 'Order update successfully!');
     }
 
     /**
@@ -384,7 +488,9 @@ class ItemBoundController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $order = ItemBound::findOrFail($id);
+        $order->delete();
+        return redirect('order');
     }
 
     function report()

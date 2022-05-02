@@ -16,8 +16,7 @@ class CreateItemBoundsTable extends Migration
         Schema::create('item_bounds', function (Blueprint $table) {
             $table->id();
             $table->string('order_number');
-            $table->integer('item');
-            $table->integer('qty');
+            $table->string('item', 350);
             $table->string('type');
             $table->integer('customer')->nullable();
             $table->string('remarks')->nullable();

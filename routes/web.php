@@ -47,13 +47,14 @@ Route::post('/generate-report', [ItemBoundController::class, 'generate_report'])
 Route::get('/customers', [PageController::class, 'customers']);
 // Items
 Route::resource('/items', ItemsController::class);
-// Inbound - Outbound
-Route::resource('/item-bound', ItemBoundController::class);
+// Orders
+Route::resource('/order', ItemBoundController::class);
+Route::post('/order', [ItemBoundController::class, 'index']);
+Route::post('/store-order', [ItemBoundController::class, 'store']);
+Route::post('/update-order', [ItemBoundController::class, 'update']);
 Route::get('/inbound', [ItemBoundController::class, 'inbound']);
 Route::get('/outbound', [ItemBoundController::class, 'outbound']);
-// Orders
-Route::get('/orders', [ItemBoundController::class, 'index']);
-Route::post('/orders', [ItemBoundController::class, 'index']);
+
 // Setting
 Route::get('/settings', [Settings::class, 'page']);
 Route::post('/save-settings', [Settings::class, 'save']);

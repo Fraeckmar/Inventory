@@ -6,7 +6,7 @@ class Format
     {
         return number_format($value, 2);
     }
-    public static function toDate($date, $format='Y-m-d')
+    public static function toDate($date, $format='F j, Y')
     {
         return date($format, strtotime($date));
     }

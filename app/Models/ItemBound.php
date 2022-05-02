@@ -13,7 +13,6 @@ class ItemBound extends Model
     
     protected $fillable = [
         'item',
-        'qty',
         'type',
         'updated-by',
         'remarks'

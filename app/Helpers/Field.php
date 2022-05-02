@@ -17,6 +17,7 @@ class Field
                 'class' => self::fieldClass()['item']['input'],
                 'label_class' => self::fieldClass()['item']['label'],
                 'value' => '',
+                'required' => 'required',
                 'options' => []
             ],
             'description' => [
@@ -37,6 +38,7 @@ class Field
                 'class' => self::fieldClass()['item']['input'],
                 'label_class' => self::fieldClass()['item']['label'],
                 'value' => '',
+                'required' => 'required',
                 'options' => []
             ],
             'balance' => [
@@ -47,6 +49,7 @@ class Field
                 'class' => self::fieldClass()['item']['input'],
                 'label_class' => self::fieldClass()['item']['label'],
                 'value' => '',
+                'required' => 'required',
                 'options' => []
             ],
             'category' => [
@@ -57,6 +60,7 @@ class Field
                 'class' => self::fieldClass()['item']['input'],
                 'label_class' => self::fieldClass()['item']['label'],
                 'value' => '',
+                'required' => 'required',
                 'options' => []
             ],
         ];
@@ -78,6 +82,7 @@ class Field
                 'class' => self::fieldClass()['item']['input'],
                 'label_class' => self::fieldClass()['item']['label'],
                 'value' => '',
+                'required' => 'required',
                 'options' => []
             ],
             'email' => [
@@ -88,6 +93,7 @@ class Field
                 'class' => self::fieldClass()['item']['input'],
                 'label_class' => self::fieldClass()['item']['label'],
                 'value' => '',
+                'required' => 'required',
                 'options' => []
             ],
             'address' => [
@@ -108,6 +114,7 @@ class Field
                 'class' => self::fieldClass()['item']['input'],
                 'label_class' => self::fieldClass()['item']['label'],
                 'value' => '',
+                'required' => 'required',
                 'options' => []
             ],
         ];
@@ -126,6 +133,7 @@ class Field
             'class' => self::fieldClass()['item']['select'],
             'label_class' => self::fieldClass()['item']['label'],
             'value' => '',
+            'required' => 'required',
             'options' => []
         ];
         $fields['qty'] = [
@@ -136,6 +144,7 @@ class Field
             'class' => self::fieldClass()['item']['input'],
             'label_class' => self::fieldClass()['item']['label'],
             'value' => '',
+            'required' => 'required',
             'options' => []
         ];
         if($type == 'outbound') {
@@ -147,6 +156,7 @@ class Field
                 'class' => self::fieldClass()['item']['select'],
                 'label_class' => self::fieldClass()['item']['label'],
                 'value' => '',
+                'required' => 'required',
                 'options' => []
             ];
         }
@@ -170,13 +180,13 @@ class Field
     {
         return [
             'item' => [
-                'label' => 'text-sm font-medium text-gray-900 block dark:text-gray-300 py-2',
-                'input' => 'border border-gray-300 sm:text-sm rounded-md block w-full p-2 mb-3',
-                'number' => 'border border-gray-300 sm:text-sm rounded-md block w-full p-2 mb-3',
+                'label' => 'text-sm font-medium text-gray-900 block dark:text-gray-500 py-2',
+                'input' => 'border border-gray-500 sm:text-sm rounded-md block w-full p-2 mb-3',
+                'number' => 'border border-gray-500 sm:text-sm rounded-md block w-full p-2.5 mb-3',
                 'select' => 'block border border-grey-light w-full p-2 rounded mb-3',
                 'textarea' => 'block border border-grey-light w-full p-2 rounded mb-3'
             ],
-            'button' => 'w-full text-center py-3 rounded bg-blue-800 text-white hover:text-blue-800 hover:bg-white border border-blue-800 my-1 cursor-pointer'
+            'button' => 'w-full text-center py-3 rounded bg-blue-800 text-white hover:text-blue-800 hover:bg-white border border-blue-800 my-1 cursor-pointer transition duration-300 ease-in-out'
         ];
     }
     /**

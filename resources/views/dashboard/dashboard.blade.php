@@ -13,7 +13,7 @@
                     </div>
                     <div class="flex-1">
                         <h2 class="font-bold uppercase text-gray-600">{{ __('Daily') }}</h2>
-                       <p class="font-bold text-3xl"> {{ Format::price($revenue->daily) }} <span class="text-green-500"><i class="fas fa-caret-up"></i></span></p>
+                       <p class="font-bold text-3xl"> {{ Format::price($revenue['daily']) }} <span class="text-green-500"><i class="fas fa-caret-up"></i></span></p>
                     </div>
                 </div>
             </div>
@@ -27,7 +27,7 @@
                     </div>
                     <div class="flex-1">
                         <h2 class="font-bold uppercase text-gray-600">{{ __('Weekly') }}</h2>
-                        <p class="font-bold text-3xl"> {{ Format::price($revenue->weekly) }} <span class="text-pink-500"><i class="fas fa-caret-up"></i></span></p>
+                        <p class="font-bold text-3xl"> {{ Format::price($revenue['weekly']) }} <span class="text-pink-500"><i class="fas fa-caret-up"></i></span></p>
                     </div>
                 </div>
             </div>
@@ -41,7 +41,7 @@
                     </div>
                     <div class="flex-1">
                         <h2 class="font-bold uppercase text-gray-600">{{ __('Monthly') }}</h2>
-                        <p class="font-bold text-3xl"> {{ Format::price($revenue->monthly) }} <span class="text-yellow-600"><i class="fas fa-caret-up"></i></span></p>
+                        <p class="font-bold text-3xl"> {{ Format::price($revenue['monthly']) }} <span class="text-yellow-600"><i class="fas fa-caret-up"></i></span></p>
                     </div>
                 </div>
             </div>
@@ -54,8 +54,8 @@
                         <div class="bg-blue-600 rounded-full py-4 w-16 h-16 text-center"><i class="fas fa-coins fa-2x fa-inverse"></i></div>
                     </div>
                     <div class="flex-1">
-                        <h2 class="font-bold uppercase text-gray-600">{{ __('Total Revenue') }}</h2>
-                        <p class="font-bold text-3xl">{{ Format::price($revenue->total) }} <span class="text-blue-600"><i class="fas fa-caret-up"></i></span></p>
+                        <h2 class="font-bold uppercase text-gray-600">{{ __('Total Sales') }}</h2>
+                        <p class="font-bold text-3xl">{{ Format::price($revenue['total']) }} <span class="text-blue-600"><i class="fas fa-caret-up"></i></span></p>
                     </div>
                 </div>
             </div>
@@ -68,7 +68,7 @@
                         <div class="bg-red-600 rounded-full py-4 w-16 h-16 text-center"><i class="fas fa-dolly-flatbed fa-2x fa-inverse"></i></div>
                     </div>
                     <div class="flex-1">
-                        <h2 class="font-bold uppercase text-gray-600"><a href="{{ url('/orders') }}" class="no-underline hover:text-red-500">{{ __('Orders') }}</a></h2>
+                        <h2 class="font-bold uppercase text-gray-600"><a href="{{ url('/order') }}" class="no-underline hover:text-red-500">{{ __('Orders') }}</a></h2>
                         <p class="font-bold text-3xl"> {{ $orders }} <span class="text-red-500"><i class="fas fa-caret-up"></i></span></p>
                     </div>
                 </div>

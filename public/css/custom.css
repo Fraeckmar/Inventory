@@ -67,9 +67,7 @@
         width: 1170px;
     }
 }
-/** 
- * Items
- */
+/* Items */
 
 .menu-item:hover .sub-item{
     display: block;
@@ -84,9 +82,14 @@
     padding-left: 15px;
 }
 
-/** 
- * Media Queries
- */
+/* Outbound */
+.repeater .form-group,
+.repeater .form-group input,
+.repeater .form-group select{
+    margin-bottom: 0;
+}
+
+/* Media Queries */
 @media screen and (min-width: 640px) {
     .sub-item {
         display: none;

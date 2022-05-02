@@ -4,107 +4,29 @@
     //dd($history);
 @endphp
 <section class="container mx-auto sm:p-6">
-	<div class="w-full mb-8 overflow-auto rounded-lg shadow-lg">
-		<div class="w-full">
-            <table class="w-full">
-            <thead>
-                <tr class="text-md font-semibold tracking-wide text-left text-gray-900 bg-gray-200 uppercase border-b border-gray-600">
-                    <th class="px-4 py-3">Item</th>
-                    <th class="px-4 py-3">Description</th>
-                    <th class="px-4 py-3">Price</th>
-                    <th class="px-4 py-3">Balance</th>
-                    <th class="px-4 py-3">Category</th>
-                </tr>
-            </thead>
-            <tbody class="bg-white">
-                <tr class="text-gray-700">
-                    <td class="px-4 py-3 text-ms font-semibold border"> {{ $item->item }} </td>
-                    <td class="px-4 py-3 text-xs border"> {{ $item->description }} </td>
-                    <td class="px-4 py-3 text-xs border"> {{ number_format($item->price, 2) }} </td>
-                    <td class="px-4 py-3 text-sm border"> {{ $item->balance }} </td>
-                    <td class="px-4 py-3 text-sm border"> {{ $item->category }} </td>
-                  </tr>       
-            </tbody>
-            </table>
-        </div>
-	</div>
-    {{-- INBOUND --}}
-    <h3 class="uppercase text-xl font-semibold mb-4">{{ __('Inbound') }}</h3>
-    <div class="w-full mb-8 overflow-auto rounded-lg shadow-lg">
-		<div class="w-full">            
-            <table class="w-full">
-                <thead>
-                    <tr class="text-md font-semibold tracking-wide text-left text-gray-900 bg-gray-200 uppercase border-b border-gray-600">
-                        <th class="px-4 py-3 w-[18%]">{{ __('Date') }}</th>
-                        <th class="px-4 py-3 w-[18%]">{{ __('Type') }}</th>
-                        <th class="px-4 py-3 w-[18%]">{{ __('Qty') }}</th>
-                        <th class="px-4 py-3 w-[18%]">{{ __('Updated By') }}</th>
-                        <th class="px-4 py-3 w-[28%]">{{ __('Remarks') }}</th>
-                    </tr>
-                </thead>                
+    <div class="w-full lg:w-3/4 m-auto">
+        <h3 class="shadow-md text-3xl font-semibold text-center bg-gray-300 rounded p-3 ">{{ $item->item }}</h3>
+        <div class="mb-3 sm:mb-8 overflow-auto rounded shadow-xl">
+            <table class="w-full table-border">
+                <thead class="bg-white">
+                    <tr>
+                        <th class="px-4 py-3 text-left">{{ __('Date') }}</th>
+                        <th class="px-4 py-3 text-left">{{ __('Description') }}</th>
+                        <th class="px-4 py-3 text-left">{{ __('Price') }}</th>
+                        <th class="px-4 py-3 text-left">{{ __('Balance') }}</th>
+                        <th class="px-4 py-3 text-left">{{ __('Category') }}</th>
+                    </tr> 
+                </thead>
                 <tbody class="bg-white">
-                    @forelse ($inbounds as $inbound)
-                        <tr class="text-gray-700">
-                            <td class="px-4 py-3 text-sm border font-semibold"> {{ $inbound->created_at }} </td>
-                            <td class="px-4 py-3 text-sm border uppercase"> {{ $inbound->type }} </td>
-                            <td class="px-4 py-3 text-sm border"> {{ $inbound->qty }} </td>
-                            <td class="px-4 py-3 text-sm border"> {{ $inbound->name }} </td>
-                            <td class="px-4 py-3 text-sm border"> {{ $inbound->remarks }} </td>
-                        </tr>  
-                    @empty
-                        <tr>
-                            <td colspan="5">
-                                <p class="text-md text-center p-3">{{ __('No Inbound found!') }}</p>
-                            </td>
-                        </tr>
-                    @endforelse     
-                </tbody>                
-            </table>
-        </div>
-	</div>
-    {{-- OUTBOUND --}}
-    <h3 class="uppercase text-xl font-semibold mb-4">{{ __('Outbound') }}</h3>
-    <div class="w-full mb-8 overflow-auto rounded-lg shadow-lg">
-		<div class="w-full">            
-            <table class="w-full">
-                <thead>
-                    <tr class="text-md font-semibold tracking-wide text-left text-gray-900 bg-gray-200 uppercase border-b border-gray-600">
-                        <th class="px-4 py-3 w-[18%]">{{ __('Date') }}</th>
-                        <th class="px-4 py-3 w-[18%]">{{ __('Type') }}</th>
-                        <th class="px-4 py-3 w-[18%]">{{ __('Qty') }}</th>
-                        <th class="px-4 py-3 w-[18%]">{{ __('Updated By') }}</th>
-                        <th class="px-4 py-3 w-[28%]">{{ __('Remarks') }}</th>
+                    <tr>
+                        <td class="px-4 py-3 text-xs border"> {{ Format::toDate($item->created_at) }} </td>
+                        <td class="px-4 py-3 text-xs border"> {{ $item->description }} </td>
+                        <td class="px-4 py-3 text-xs border"> {{ Format::price($item->price) }} </td>
+                        <td class="px-4 py-3 text-sm border"> {{ $item->balance }} </td>
+                        <td class="px-4 py-3 text-sm border"> {{ $item->category }} </td>
                     </tr>
-                </thead>                
-                <tbody class="bg-white">
-                    @forelse ($outbounds as $outbound)
-                        <tr class="text-gray-700">
-                            <td class="px-4 py-3 text-sm border font-semibold"> {{ date('Y-m-d', strtotime($outbound->created_at)) }} | {{ date('H:i', strtotime($outbound->created_at)) }} </td>
-                            <td class="px-4 py-3 text-sm border uppercase"> {{ $outbound->type }} </td>
-                            <td class="px-4 py-3 text-sm border"> {{ $outbound->qty }} </td>
-                            <td class="px-4 py-3 text-sm border"> {{ $outbound->name }} </td>
-                            <td class="px-4 py-3 text-sm border"> {{ $outbound->remarks }} </td>
-                        </tr>  
-                    @empty
-                        <tr>
-                            <td colspan="5">
-                                <p class="text-md text-center p-3">{{ __('No Outbound found!') }}</p>
-                            </td>
-                        </tr>
-                    @endforelse     
-                </tbody>                
+                </tbody>
             </table>
-        </div>
-	</div>
-    {{-- Totals --}}
-    <div class="grid grid-cols-1 lg:grid-cols-3">
-        <div class=""></div>
-        <div class=""></div>
-        <div class="bg-white round-lg shadow-lg p-4">
-            <p class="font-bold text-xl">{{ __('TOTAL') }}</p>
-            <p class="font-semibold text-lg py-2">{{ __('Balance') }}: {{ $item->balance }} {{ Format::unit('pcs') }}</p>
-            <p class="font-semibold text-lg py-2">{{ __('Total Inbound') }}: {{ $total_inbounds }} {{ Format::unit('pcs') }}</p>
-            <p class="font-semibold text-lg py-2">{{ __('Total Outbound') }}: {{ $total_outbounds }} {{ Format::unit('pcs') }}</p>
         </div>
     </div>
 </section>

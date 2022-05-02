@@ -10,6 +10,7 @@ use App\Models\Item;
 use App\Models\User;
 use App\Models\ItemBound;
 use App\Datatable\Datatable;
+use Helper;
 
 class ItemsController extends Controller
 {
@@ -20,6 +21,13 @@ class ItemsController extends Controller
      */
     public function index()
     {  
+        $items = Item::select()->paginate(25);
+        $tbl_column_values = !empty($items) ? $items->toArray()['data'] : [];
+        $tbl_column_values = array_reduce($tbl_column_values, function($carry, $item){
+            $item['item'] = '<a href="'.url('items').'/'.$item['id'].'" class="text-blue-600">'.$item['item'].'</a>';
+            $carry[] = $item;
+            return $carry;
+        });
         $tbl_column_fields = [
             [
                 'heading' => __('Item'),
@@ -49,30 +57,27 @@ class ItemsController extends Controller
         ];
         $tbl_actions = [
             [
-                'action' => '',
-                'model' => 'items',
-            ],
-            [
                 'action' => 'edit',
                 'model' => 'items',
+                'url' => 'items/{id}/edit'
             ],
             [
                 'action' => 'delete',
-                'model' => 'items',
+                'model' => 'order',
                 'class' => 'delete-item',
-                'extra' => 'data-label="Are you sure to delete this Item?"'
-            ],
-            // [
-            //     'action' => 'receipt',
-            //     'model' => 'items',
-            //     'class' => 'item-receipt',
-            // ],
+                'extra' => 'data-label="Are you sure to delete this Item?" data-form="#delete-items{id}"'
+            ]
         ];
-        $tbl_column_values = Item::all()->toArray();
+        $action_variables = [
+            '{id}' => 'id'
+        ];
+        
         $dataTable = new Datatable('items');
         $dataTable->set_table_column_fields($tbl_column_fields);
         $dataTable->set_table_column_values($tbl_column_values);
+        $dataTable->set_action_variables($action_variables);
         $dataTable->set_table_actions($tbl_actions);
+        $dataTable->set_pagination_links($items->toArray());
         return view('items.items', ['dataTable' => $dataTable]);
     }
 
@@ -124,34 +129,8 @@ class ItemsController extends Controller
      */
     public function show($id)
     {
-        $inbounds = DB::table('item_bounds')->leftJoin('users', 'item_bounds.updated_by', '=', 'users.id')
-            ->select('item_bounds.*', 'users.name')
-            ->where('item_bounds.type', '=', 'inbound')
-            ->where('item_bounds.item', '=', $id)
-            ->orderBy('item_bounds.created_at')
-            ->get();
-
-        $outbounds = DB::table('item_bounds')->leftJoin('users', 'item_bounds.updated_by', '=', 'users.id')
-            ->select('item_bounds.*', 'users.name')
-            ->where('item_bounds.type', '=', 'outbound')
-            ->where('item_bounds.item', '=', $id)
-            ->orderBy('item_bounds.created_at')
-            ->get();
-
-        $total_inbounds = $inbounds->reduce(function($carry, $item){
-            return $carry + $item->qty;
-        }, 0);
-
-        $total_outbounds = $outbounds->reduce(function($carry, $item){
-            return $carry + $item->qty;
-        }, 0);
-
         return view('items.show',[
-            'item' => Item::findOrFail($id),
-            'inbounds' => $inbounds,            
-            'outbounds' =>  $outbounds,
-            'total_inbounds' => $total_inbounds,
-            'total_outbounds' => $total_outbounds
+            'item' => Item::findOrFail($id)
         ]);
     }
 

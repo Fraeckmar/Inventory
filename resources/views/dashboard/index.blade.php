@@ -16,6 +16,7 @@
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
     <script src="{{ asset('js/jquery.min.js') }}" defer></script>
+    <script src="{{ asset('js/jquery.repeater.min.js') }}" defer></script>
     
     <!-- Styles -->
     <link href="{{ mix('css/app.css') }}" rel="stylesheet">
@@ -23,7 +24,7 @@
     <link href="{{ asset('selectize/css/selectize.bootstrap3.css') }}" rel="stylesheet">
     <link href="{{ asset('selectize/css/selectize-helper.css') }}" rel="stylesheet">
 </head>
-<body class="dashboard bg-gray-100 h-screen antialiased leading-none font-sans">
+<body class="dashboard bg-white h-screen antialiased leading-none font-sans">
     <header>
         <div class="fixed bg-gray-800 w-full py-4 top-0 z-20">
             <div class="mx-auto flex justify-between items-center px-6 relative">
@@ -69,14 +70,14 @@
             @if(Auth::check() && Auth::user()->role != 'customer')
                 @include('dashboard.nav.navigation')
             @endif           
-            <div id="content" class="bg-gray-100 w-full p-3 py-24 lg:py-24">
+            <div id="content" class="w-full p-3 py-24 lg:py-24">
                 <div class="py-2">
                     @yield('content')
                 </div>
             </div>            
         </div>
     </main>
-    @if (request()->is('reports') || request()->is('orders'))
+    @if (request()->is('reports') || request()->is('order'))
     <script src="{{ Helper::datepickerSrc() }}" defer></script>
     @endif
     <script src="{{ asset('js/scripts.js') }}" defer></script>
