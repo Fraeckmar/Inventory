@@ -79,7 +79,7 @@ class ItemBoundController extends Controller
             $order_where_clause .= " AND item_bounds.order_number = '{$request->_search}'";
         }
         if ($request->filled('item')) {
-            $order_where_clause .= " AND item_bounds.item LIKE '%{$request->item}%'";
+            $order_where_clause .= " AND item_bounds.item LIKE '%\"{$request->item}\"%'";
         }
         if ($request->filled('customer')) {
             $order_where_clause .= " AND item_bounds.customer = '{$request->customer}'";
@@ -94,7 +94,6 @@ class ItemBoundController extends Controller
             $customer_auth = Auth::id();
             $order_where_clause = "item_bounds.customer = {$customer_auth}";
         }
-
         //DB::enableQueryLog();
         $itemBounds = ItemBound::whereRaw($order_where_clause)->paginate(25);
         $tbl_column_values = !empty($itemBounds) ? $itemBounds->toArray()['data'] : [];
