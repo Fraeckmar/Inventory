@@ -14,6 +14,7 @@ class Datatable {
     private $action_variables = [];
     private $pagination;
     public $table_is_fluid = true;
+    public $search_placeholder = '';
     public $action_icon_classes = [
         'view' => 'fas fa-eye text-lg transition-colors duration-150 text-blue-500 hover:text-blue-600',
         'edit' => 'fas fa-edit text-lg transition-colors duration-150 text-green-500 hover:text-green-600',
@@ -25,6 +26,7 @@ class Datatable {
     function __construct($model)
     {
         $this->model = $model;
+        $this->search_placeholder = 'Search '.ucwords($model).'..';
     }
 
     function set_table_filters($filters)
@@ -159,7 +161,7 @@ class Datatable {
                             $html .= csrf_field();
                             $html .= '<div class="block md:flex">';
                                 $html .= '<div class="w-full sm:w-3/4">';
-                                    $html .= '<input type="txt" id="_search" name="_search" placeholder="Search '.ucwords($this->model).'.." class="p-1.5 mb-1 w-full text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"/>';
+                                    $html .= '<input type="txt" id="_search" name="_search" placeholder="'.$this->search_placeholder.'" class="p-1.5 mb-1 w-full text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"/>';
                                 $html .= '</div>';
                                 $html .= '<div class="w-full lg:w-24 sm:w-1/4">';
                                     $html .= '<button type="submit" class="rounded py-3 md:py-2.5 flex items-center justify-center w-full border bg-blue-600 text-white hover:bg-white hover:text-blue-600 hover:border-blue-400 transition duration-300 ease-in-out">';

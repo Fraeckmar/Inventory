@@ -167,6 +167,7 @@ class PageController extends Controller
         $dataTable->set_action_variables($action_variables);
         $dataTable->set_table_actions($tbl_actions);
         $dataTable->set_table_filters($table_filters);
+        $dataTable->search_placeholder = 'Search Customer..';
         $dataTable->set_pagination_links($users->toArray());
         return view('customer.list', ['dataTable' => $dataTable]);
     }
