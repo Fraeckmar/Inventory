@@ -366,9 +366,13 @@ class ItemBoundController extends Controller
                         'label' => __('Qty'),
                         'value' => $item_qty
                     ],
+                    'price' => [
+                        'label' => __('Unit Price'),
+                        'value' => $item_price
+                    ],
                     'cost' => [
                         'label' => __('Unit Cost'),
-                        'value' => $item_price
+                        'value' => $unit_cost
                     ]
                 ];
                 $order['items_data'][] = $item_array;
@@ -508,11 +512,11 @@ class ItemBoundController extends Controller
     function generate_report(Request $request)
     {
         $where_clase = "item_bounds.id IS NOT NULL";
-        if ($request->has('date_from') && $request->has('date_to') && !empty($request->date_from) && !empty($request->date_to)) {
+        if ($request->filled('date_from') && $request->filled('date_to')) {
             $date_from = date('Y-m-d', strtotime($request->date_from));
-            $date_to = date('Y-m-d', strtotime($request->date_to));
+            $date_to = date('Y-m-d', strtotime('+1 day', strtotime($request->date_to)));
             $where_clase .= !empty($where_clase) ? " AND" : "";
-            $where_clase .= " item_bounds.created_at >= '".$date_from."' AND item_bounds.created_at <= '".$date_to."'";
+            $where_clase .= " item_bounds.created_at BETWEEN '{$date_from}' AND '{$date_to}'";
         }
         if ($request->has('customer') && !empty($request->customer)) {
             $where_clase .= !empty($where_clase) ? " AND" : "";
@@ -524,20 +528,54 @@ class ItemBoundController extends Controller
             $where_clase .= " item_bounds.type = '".strtolower($request->type)."'";
         }
 
-        $item_bounds = ItemBound::whereRaw($where_clase)->get()->toArray();        
-        $fields = Field::boundFields('outbound');
-        $fields['created_at'] = ['label' => __('Date')];
+        $items = Order::get_items();
         $customers = User::where('role', 'customer')->get()->toArray();
         $customers = array_reduce($customers, function($carry, $customer){
             $carry[$customer['id']] = $customer['name'];
             return $carry;
         });
+        $item_bounds = ItemBound::whereRaw($where_clase)->get()->toArray();    
+        $csv_values = [];
+        if (!empty($item_bounds)) {
+            foreach ($item_bounds as $order) {
+                $order_no = $order['order_number'];
+                $customer_id = $order['customer'];
+                $items_data = unserialize($order['item']);
+                $unit_cost = 0;
+                $unit_qty = 0;
+                $items_str = [];
+                if (!empty($items_data)) {
+                    foreach ($items_data as $item) {
+                        $item_id = $item['item'];
+                        $item_qty = $item['qty'];
+                        $unit_qty += $item_qty;
+                        $item_price = array_key_exists($item_id, $items) ? $items[$item_id]['price'] : 0;
+                        $unit_cost += $item_qty * $item_price;
+                        $items_str[] = array_key_exists($item_id, $items) ? $items[$item_id]['item'].'-'.$item_qty : __('Deleted').': ID'.$item_id.'-'.$item_qty;
+                    } 
+                    $items_str = implode(', ', $items_str);
+                    if (!array_key_exists($order_no, $csv_values)) {
+                        $csv_values[$order_no]['qty'] = 0 ;
+                        $csv_values[$order_no]['total_cost'] = 0;
+                    }  
+                    $csv_values[$order_no]['order_number'] = $order_no;
+                    $csv_values[$order_no]['created_at'] = Format::toDate($order['created_at']); 
+                    $csv_values[$order_no]['remarks'] = $order['remarks'];
+                    $csv_values[$order_no]['customer'] = array_key_exists($customer_id, $customers) ? $customers[$customer_id] : ''; 
+                    $csv_values[$order_no]['type'] = $order['type']; 
+                    $csv_values[$order_no]['item'] = $items_str; 
+                    $csv_values[$order_no]['qty'] += $unit_qty ;
+                    $csv_values[$order_no]['total_cost'] += $unit_cost;
+                }
+            }
+        }
 
-        $items = Item::all()->toArray();
-        $items = array_reduce($items, function($carry, $item){
-            $carry[$item['id']] = $item['item'];
-            return $carry;
-        });
+        $fields = Field::boundFields('outbound');
+        $fields = ['order_number' => ['label' => __('Order Number')]] + $fields;
+        $fields['created_at'] = ['label' => __('Date')];
+        $fields['qty'] = ['label' => __('Total Qty')];
+        $fields['total_cost'] = ['label' => __('Total Cost')];
+        
 
         $header = "";
         if (!empty($fields)) {
@@ -546,31 +584,19 @@ class ItemBoundController extends Controller
                 $header .= '"'.$field['label'].'"';
             }
         }
-        $data_options = [
-            'customer' => $customers,
-            'item' => $items
-        ];
         $csv_content = $header."\r\n";
-
-        if (!empty($item_bounds)) {
-            foreach ($item_bounds as $item) {
+        if (!empty($csv_values)) {
+            foreach ($csv_values as $order_number => $csv_value) {
                 $csv_content_line = '';
                 foreach ($fields as $item_key => $field) {                    
-                    $value = $item[$item_key];
-                    if (in_array($item_key, ['item', 'customer'])) {
-                        if (array_key_exists($value, $data_options[$item_key])) {
-                            $value = $data_options[$item_key][$value];                            
-                        }                        
-                    }
-                    if ($item_key == 'created_at') {
-                        $value = date('Y-m-d', strtotime($value));
-                    }
+                    $value = $csv_value[$item_key];
                     $csv_content_line .= !empty($csv_content_line) ? ',' : '';
                     $csv_content_line .= '"'.$value.'"';
                 }
                 $csv_content .= $csv_content_line."\r\n";
             }
         }
+        
         ob_get_clean();
         $fileName = 'Item-Orders-'.date('Ymdhis').'.csv';
         $filepath = storage_path('tmp').'/'.$fileName;
