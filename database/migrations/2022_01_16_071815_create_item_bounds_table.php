@@ -18,7 +18,7 @@ class CreateItemBoundsTable extends Migration
             $table->string('order_number');
             $table->string('item', 350);
             $table->string('type');
-            $table->bigInteger('customer');
+            $table->bigInteger('customer')->nullable();
             $table->string('remarks')->nullable();
             $table->integer('updated_by');
             $table->timestamps();
