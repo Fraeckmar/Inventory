@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Valuestore\Valuestore;
 
 class Settings extends Controller
@@ -13,8 +14,13 @@ class Settings extends Controller
         $this->settings = Valuestore::make(storage_path('app/settings.json'));
     }
     // Settings page
-    public function page()
+    public function page(Request $request)
     {
+        if ($request->has('debug')) {
+            $url = Storage::url('app/settings.json');
+            echo 'url '.$url;
+            dd($this->settings->all());
+        }
         return view('settings.settings', [
             'settings' => $this->settings->all()
         ]);
