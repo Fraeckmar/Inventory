@@ -511,12 +511,12 @@ class ItemBoundController extends Controller
 
     function generate_report(Request $request)
     {
-        $where_clase = "item_bounds.order_number IS NOT NULL";
+        $where_clase = "";
         if ($request->filled('date_from') && $request->filled('date_to')) {
-            $date_from = strtotime(date('Y-m-d', strtotime($request->date_from)));
-            $date_to = strtotime(date('Y-m-d', strtotime('+1 day', strtotime($request->date_to))));
+            $date_from = date('Y-m-d', strtotime($request->date_from));
+            $date_to = date('Y-m-d', strtotime('+1 day', strtotime($request->date_to)));
             $where_clase .= !empty($where_clase) ? " AND" : "";
-            $where_clase .= " item_bounds.created_at BETWEEN FROM_UNIXTIME({$date_from}) AND FROM_UNIXTIME({$date_to})";
+            $where_clase .= " item_bounds.created_at BETWEEN '{$date_from}' AND '{$date_to}'";
         }
         if ($request->has('customer') && !empty($request->customer)) {
             $where_clase .= !empty($where_clase) ? " AND" : "";
