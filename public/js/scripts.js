@@ -16,6 +16,14 @@ jQuery(document).ready(function($){
     $('#menu-toggle').on('click', function(){
         $('#mobile-menu-items').toggle('fast');
     });
+    $(document).on('click', function(e) {
+        if (!$(e.target).closest('#menu-toggle').length) {
+            var mobile_menu = $('#mobile-menu-items');
+            if (mobile_menu.css('display') == 'block') {
+                mobile_menu.toggle('fast');
+            }
+        }        
+      });
     // Delete Item
     $('.delete-item').on('click', function(e){
         e.preventDefault();

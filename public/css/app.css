@@ -1204,6 +1204,12 @@ input:checked + .toggle-bg {
   height: 2rem;
 }
 
+.h-fit {
+  height: -webkit-fit-content;
+  height: -moz-fit-content;
+  height: fit-content;
+}
+
 .max-h-screen {
   max-height: 100vh;
 }
