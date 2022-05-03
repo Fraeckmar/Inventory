@@ -26,12 +26,12 @@
     <h3 class="shadow-md text-xl font-semibold text-center bg-gray-300 rounded p-2 uppercase">{{ __('Order History') }}</h3>
     <div class="mb-3 overflow-scroll rounded shadow-xl">
         <div>
-            <table class="w-full table-border table-auto">
+            <table class="w-full table-border">
                 <thead class="bg-white">
                     <tr>
                         <th class="py-3 px-1.5 sm:py-4 sm:px-3 text-xs text-left w-32"> {{ __('Order No.') }} </th>
                         <th class="py-3 px-1.5 sm:py-4 sm:px-3 text-xs text-left"> {{ __('Date') }} </th>
-                        <th class="py-3 px-1.5 sm:py-4 sm:px-3 text-xs text-left"> {{ __('Item(s).') }} </th>
+                        <th class="py-3 px-1.5 sm:py-4 sm:px-3 text-xs text-left w-32"> {{ __('Item(s).') }} </th>
                         <th class="py-3 px-1.5 sm:py-4 sm:px-3 text-xs text-left "> {{ __('Qty') }} </th>
                         <th class="py-3 px-1.5 sm:py-4 sm:px-3 text-xs text-left"> {{ __('Unit Cost') }} </th>
                         

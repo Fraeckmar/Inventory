@@ -65,14 +65,20 @@ class Datatable {
         $additional_param = [];
         $html = '<div class="datatable-container">';    
         if (!empty($this->table_filters)) {
-            $html .= '<div class="mb-5 lg:mb-10">';
+            $html .= '<div class="search-placeholder text-center block sm:hidden mb-3">';
+                $html .= '<span class="search-icon text-blue-600">';
+                    $html .= '<i class="fa fa-search text-2xl"></i>';
+                $html .= '</span>';
+            $html .= '</div>';
+            $html .= '<div id="filter-wrap" class="hidden sm:block mb-5 lg:mb-10 transition duration-500 ease-in-out">';
                 $html .= '<div class="block w-full lg:flex">';
                     // Filter Form
-                    $html .= '<div id="filter-wrap" class="w-screen-md mb-3 sm:mb-1">';
+                    $html .= '<div class="w-screen-md mb-3 sm:mb-1">';
                         $html .= '<form method="post" action="'.url($this->model).'">';
                             $html .= csrf_field();
                             $html .= '<input type="hidden" name="items_filter" value="items_filter"/>';
                             $html .= '<div class="block w-full rounded md:flex">';
+                                $html .= '<div class="grow"></div>';
                                 foreach ($this->table_filters as $filter) {
                                     $fl_key = array_key_exists('key', $filter) ? $filter['key'] : '';
                                     if (in_array($fl_key, $skip_filters)) {

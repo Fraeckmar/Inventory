@@ -1838,6 +1838,11 @@ input:checked + .toggle-bg {
   padding-right: 0;
 }
 
+.px-8 {
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
 .pr-5 {
   padding-right: 1.25rem;
 }
@@ -2169,6 +2174,10 @@ input:checked + .toggle-bg {
 
 .duration-150 {
   transition-duration: 150ms;
+}
+
+.duration-500 {
+  transition-duration: 500ms;
 }
 
 .ease-in-out {
@@ -2630,6 +2639,10 @@ input:checked + .toggle-bg {
 
   .sm\:p-6 {
     padding: 1.5rem;
+  }
+
+  .sm\:p-3 {
+    padding: 0.75rem;
   }
 
   .sm\:px-6 {

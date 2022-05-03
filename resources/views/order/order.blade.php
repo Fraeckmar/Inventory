@@ -43,8 +43,8 @@
 									'type' => 'button',
 									'key' => 'delete_item',
 									'label' => '<i class="fa fa-minus"></i>',
-									'class' => 'w-full text-center py-3 rounded bg-red-600 text-white hover:bg-red-700 border border-red-500 cursor-pointer',
-									'container_class' => 'w-12 ml-3 mb-0',
+									'class' => 'w-full text-center p-2 sm:p-3 rounded bg-red-600 text-white hover:bg-red-700 border border-red-500 cursor-pointer',
+									'container_class' => 'ml-3 mb-0',
 									'attribues' => 'data-repeater-delete'
 								]) }}
 							@endif
@@ -58,8 +58,8 @@
 								'type' => 'button',
 								'key' => 'delete_item',
 								'label' => '<i class="fa fa-plus"></i>',
-								'class' => 'w-full text-center py-3 rounded bg-blue-600 text-white hover:bg-blue-700 border border-blue-500 cursor-pointer',
-								'container_class' => 'w-12 ml-3 mt-1 mb-0',
+								'class' => 'w-full text-center p-2 sm:p-3 rounded bg-blue-600 text-white hover:bg-blue-700 border border-blue-500 cursor-pointer',
+								'container_class' => 'ml-3 mt-1 mb-0',
 								'attribues' => 'data-repeater-create'
 							]) }}
 						</div>

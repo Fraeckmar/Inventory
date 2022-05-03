@@ -26,4 +26,10 @@ jQuery(document).ready(function($){
             $(formId).trigger('submit');
         }
     });
+
+    // Search Icon
+    $('.search-placeholder').on('click', '.search-icon', function(){
+        $('#filter-wrap').slideToggle(400);
+        $(this).addClass('hidden');
+    });
 });
