@@ -42,21 +42,34 @@
                         <a class="no-underline hover:underline" href="{{ url('login') }}">{{ __('Login') }}</a>
                         <a class="no-underline hover:underline" href="{{ url('register') }}">{{ __('Register') }}</a>
                     @else
-                        <div class="hidden sm:block space-x-4">
-                            <span>{{ Auth::user()->name }}</span>
-                            <a href="{{ url('logout') }}"
-                            class="no-underline hover:underline"
-                            onclick="event.preventDefault();
-                                    document.getElementById('logout-form').submit();">{{ __('Logout') }}</a>
-                            <form id="logout-form" action="{{ url('logout') }}" method="POST" class="hidden">
-                                {{ csrf_field() }}
-                            </form>
-                        </div>
-                        <div class="sm:hidden">
-                            <span id="menu-toggle">
-                                <i class="fas fa-bars fa-2x"></i>
-                            </span>
-                        </div>
+                        @if (!Helper::auth_is_admin())
+                            <div class="block space-x-4">
+                                <span>{{ Auth::user()->name }}</span>
+                                <a href="{{ url('logout') }}"
+                                class="no-underline hover:underline"
+                                onclick="event.preventDefault();
+                                        document.getElementById('logout-form').submit();">{{ __('Logout') }}</a>
+                                <form id="logout-form" action="{{ url('logout') }}" method="POST" class="hidden">
+                                    {{ csrf_field() }}
+                                </form>
+                            </div>
+                        @else
+                            <div class="hidden sm:block space-x-4">
+                                <span>{{ Auth::user()->name }}</span>
+                                <a href="{{ url('logout') }}"
+                                class="no-underline hover:underline"
+                                onclick="event.preventDefault();
+                                        document.getElementById('logout-form').submit();">{{ __('Logout') }}</a>
+                                <form id="logout-form" action="{{ url('logout') }}" method="POST" class="hidden">
+                                    {{ csrf_field() }}
+                                </form>
+                            </div>
+                            <div class="sm:hidden">
+                                <span id="menu-toggle">
+                                    <i class="fas fa-bars fa-2x"></i>
+                                </span>
+                            </div>
+                        @endif
                     @endguest
                 </nav>
             </div>
