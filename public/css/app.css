@@ -1056,6 +1056,11 @@ input:checked + .toggle-bg {
   margin-right: 1rem;
 }
 
+.my-3 {
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
 .mb-4 {
   margin-bottom: 1rem;
 }
@@ -2499,6 +2504,21 @@ input:checked + .toggle-bg {
     margin-bottom: 2rem;
   }
 
+  .sm\:mx-4 {
+    margin-left: 1rem;
+    margin-right: 1rem;
+  }
+
+  .sm\:my-3 {
+    margin-top: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .sm\:my-0 {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
   .sm\:mt-10 {
     margin-top: 2.5rem;
   }
@@ -2533,6 +2553,10 @@ input:checked + .toggle-bg {
 
   .sm\:block {
     display: block;
+  }
+
+  .sm\:inline {
+    display: inline;
   }
 
   .sm\:flex {
@@ -2684,6 +2708,11 @@ input:checked + .toggle-bg {
   .sm\:px-4 {
     padding-left: 1rem;
     padding-right: 1rem;
+  }
+
+  .sm\:py-0 {
+    padding-top: 0;
+    padding-bottom: 0;
   }
 
   .sm\:pb-10 {

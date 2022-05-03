@@ -36,8 +36,8 @@
 				{{-- Submit --}}
 				{{ GenField::input([
 					'type' => 'submit',
-					'key' => 'update_customer',
-					'label' => __('Update Customer'),
+					'key' => 'add_customer',
+					'label' => __('Add Customer'),
 					'class' => Field::fieldClass()['user']['button']
 				]) }}
 			{{ Form::close() }}
