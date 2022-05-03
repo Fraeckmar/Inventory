@@ -520,7 +520,7 @@ class ItemBoundController extends Controller
         }
         if ($request->has('customer') && !empty($request->customer)) {
             $where_clase .= !empty($where_clase) ? " AND" : "";
-            $where_clase .= " `customer` = CAST({$request->customer} as int)";
+            $where_clase .= " `customer` = '{$request->customer}'";
         }
 
         if ($request->has('type') && !empty($request->type)) {
