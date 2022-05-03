@@ -511,7 +511,7 @@ class ItemBoundController extends Controller
 
     function generate_report(Request $request)
     {
-        $where_clase = "item_bounds.id IS NOT NULL";
+        $where_clase = "item_bounds.id != 0";
         if ($request->filled('date_from') && $request->filled('date_to')) {
             $date_from = date('Y-m-d', strtotime($request->date_from));
             $date_to = date('Y-m-d', strtotime('+1 day', strtotime($request->date_to)));
