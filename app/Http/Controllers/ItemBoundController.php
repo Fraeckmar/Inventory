@@ -513,10 +513,10 @@ class ItemBoundController extends Controller
     {
         $where_clase = "item_bounds.order_number IS NOT NULL";
         if ($request->filled('date_from') && $request->filled('date_to')) {
-            $date_from = date('Y-m-d', strtotime($request->date_from));
-            $date_to = date('Y-m-d', strtotime('+1 day', strtotime($request->date_to)));
+            $date_from = strtotime(date('Y-m-d', strtotime($request->date_from)));
+            $date_to = strtotime(date('Y-m-d', strtotime('+1 day', strtotime($request->date_to))));
             $where_clase .= !empty($where_clase) ? " AND" : "";
-            $where_clase .= " item_bounds.created_at BETWEEN TIMESTAMP('{$date_from}') AND  TIMESTAMP('{$date_to}')";
+            $where_clase .= " item_bounds.created_at BETWEEN FROM_UNIXTIME({$date_from}) AND FROM_UNIXTIME({$date_to})";
         }
         if ($request->has('customer') && !empty($request->customer)) {
             $where_clase .= !empty($where_clase) ? " AND" : "";
@@ -527,7 +527,6 @@ class ItemBoundController extends Controller
             $where_clase .= !empty($where_clase) ? " AND" : "";
             $where_clase .= " item_bounds.type = '".strtolower($request->type)."'";
         }
-
         $items = Order::get_items();
         $customers = User::where('role', 'customer')->get()->toArray();
         $customers = array_reduce($customers, function($carry, $customer){
