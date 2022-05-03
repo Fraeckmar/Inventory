@@ -19,14 +19,29 @@ class Order
         return $prefix.$order_number;
     }
 
-    static function get_order_summary()
+    static function get_items()
+    {
+        $items = Item::all()->toArray();
+        $items = array_reduce($items, function($carry, $item){
+            $carry[$item['id']] = $item;
+            return $carry;
+        });
+        return $items;
+    }
+
+    static function get_item_prices()
     {
         $items = Item::select(['id', 'price'])->get()->toArray();
         $items = array_reduce($items, function($carry, $item){
             $carry[$item['id']] = $item['price'];
             return $carry;
         });
+        return $items;
+    }
 
+    static function get_order_summary()
+    {        
+        $items = self::get_item_prices();
         $daily = ItemBound::select('item')->whereRaw("CAST(item_bounds.created_at AS DATE) = CAST('".date('Y-m-d')."' AS DATE) AND item_bounds.type='outbound'")->get()->toArray();
         $daily = array_reduce($daily, function($carry, $order) use($items){
             $orders = unserialize($order['item']);

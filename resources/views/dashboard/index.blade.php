@@ -77,7 +77,7 @@
             </div>            
         </div>
     </main>
-    @if (request()->is('reports') || request()->is('order'))
+    @if (request()->is('reports')||request()->is('order')||request()->is('users')||request()->is('items'))
     <script src="{{ Helper::datepickerSrc() }}" defer></script>
     @endif
     <script src="{{ asset('js/scripts.js') }}" defer></script>

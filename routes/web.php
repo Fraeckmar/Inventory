@@ -39,14 +39,16 @@ Route::get('/login', [PageController::class, 'login']);
 Route::post('/login', [AuthController::class, 'login'])->name('login');;
 Route::post('/logout', [AuthController::class, 'logout']);
 // User
-Route::resource('/user', UserController::class);
+Route::resource('/users', UserController::class);
+Route::post('/register', [UserController::class, 'store']);
+Route::get('/users', [PageController::class, 'customers']);
+Route::post('/users', [PageController::class, 'customers']);
 // Reports
 Route::get('/reports', [ItemBoundController::class, 'report']);
 Route::post('/generate-report', [ItemBoundController::class, 'generate_report']);
-// Customers
-Route::get('/customers', [PageController::class, 'customers']);
 // Items
 Route::resource('/items', ItemsController::class);
+Route::post('/items', [ItemsController::class, 'index']);
 // Orders
 Route::resource('/order', ItemBoundController::class);
 Route::post('/order', [ItemBoundController::class, 'index']);

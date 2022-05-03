@@ -73,14 +73,14 @@ class Field
 
     public static function user()
     {
-        return [
+        $user_fields =  [
             'name' => [
                 'key' => 'name',
                 'label' => __('Name'),
                 'placeholder' => '',
                 'type' => 'text',                
-                'class' => self::fieldClass()['item']['input'],
-                'label_class' => self::fieldClass()['item']['label'],
+                'class' => self::fieldClass()['user']['input'],
+                'label_class' => self::fieldClass()['user']['label'],
                 'value' => '',
                 'required' => 'required',
                 'options' => []
@@ -90,8 +90,8 @@ class Field
                 'label' => __('Email'),
                 'placeholder' => '',
                 'type' => 'text',                
-                'class' => self::fieldClass()['item']['input'],
-                'label_class' => self::fieldClass()['item']['label'],
+                'class' => self::fieldClass()['user']['input'],
+                'label_class' => self::fieldClass()['user']['label'],
                 'value' => '',
                 'required' => 'required',
                 'options' => []
@@ -101,8 +101,8 @@ class Field
                 'label' => __('Address'),
                 'placeholder' => '',
                 'type' => 'text',                
-                'class' => self::fieldClass()['item']['input'],
-                'label_class' => self::fieldClass()['item']['label'],
+                'class' => self::fieldClass()['user']['input'],
+                'label_class' => self::fieldClass()['user']['label'],
                 'value' => '',
                 'options' => []
             ],
@@ -111,13 +111,25 @@ class Field
                 'label' => __('Role'),
                 'placeholder' => '',
                 'type' => 'select',                
-                'class' => self::fieldClass()['item']['input'],
-                'label_class' => self::fieldClass()['item']['label'],
+                'class' => self::fieldClass()['user']['input'],
+                'label_class' => self::fieldClass()['user']['label'],
                 'value' => '',
                 'required' => 'required',
                 'options' => []
             ],
+            'password' => [
+                'key' => 'password',
+                'label' => __('Password'),
+                'placeholder' => '******',
+                'type' => 'text',                
+                'class' => self::fieldClass()['user']['input'],
+                'label_class' => self::fieldClass()['user']['label'],
+                'value' => '',
+                'required' => 'required',
+                'options' => []
+            ]
         ];
+        return $user_fields;
     }
 
     /** 
@@ -185,6 +197,13 @@ class Field
                 'number' => 'border border-gray-500 sm:text-sm rounded-md block w-full p-2.5 mb-3',
                 'select' => 'block border border-grey-light w-full p-2 rounded mb-3',
                 'textarea' => 'block border border-grey-light w-full p-2 rounded mb-3'
+            ],
+            'user' => [
+                'label' => 'text-sm font-medium text-gray-900 block dark:text-gray-500 py-2',
+                'input' => 'border border-gray-500 sm:text-sm rounded-md block w-full p-2.5 mb-3',
+                'number' => 'border border-gray-500 sm:text-sm rounded-md block w-full p-2.5 mb-3',
+                'select' => 'block border border-grey-light w-full p-2.5 rounded mb-3',
+                'button' => 'w-full text-center py-4 rounded bg-blue-800 text-white hover:text-blue-800 hover:bg-white border border-blue-800 my-1 cursor-pointer transition duration-300 ease-in-out'
             ],
             'button' => 'w-full text-center py-3 rounded bg-blue-800 text-white hover:text-blue-800 hover:bg-white border border-blue-800 my-1 cursor-pointer transition duration-300 ease-in-out'
         ];

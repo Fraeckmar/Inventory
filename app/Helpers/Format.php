@@ -6,7 +6,7 @@ class Format
     {
         return number_format($value, 2);
     }
-    public static function toDate($date, $format='F j, Y')
+    public static function toDate($date, $format='m/d/Y')
     {
         return date($format, strtotime($date));
     }

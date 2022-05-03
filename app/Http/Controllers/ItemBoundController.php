@@ -72,22 +72,24 @@ class ItemBoundController extends Controller
 
         // Filters
         $order_where_clause = "item_bounds.type = 'outbound'";
-        if ($request->filled('type')) {
-            $order_where_clause = "item_bounds.type = '{$request->type}'";
-        }
+        if (!$request->filled('_search')) {
+            if ($request->filled('type')) {
+                $order_where_clause = "item_bounds.type = '{$request->type}'";
+            }
+            if ($request->filled('item')) {
+                $order_where_clause .= " AND item_bounds.item LIKE '%\"{$request->item}\"%'";
+            }
+            if ($request->filled('customer')) {
+                $order_where_clause .= " AND item_bounds.customer = '{$request->customer}'";
+            }
+            if ($request->filled('date_to') && $request->filled('date_from')) {
+                $date_from = date('Y-m-d', strtotime($request->date_from));
+                $date_to = date('Y-m-d', strtotime('+1 day', strtotime($request->date_to)));
+                $order_where_clause .= " AND item_bounds.created_at BETWEEN '{$date_from}' AND '{$date_to}'";
+            }
+        }        
         if ($request->filled('_search')) {
-            $order_where_clause .= " AND item_bounds.order_number = '{$request->_search}'";
-        }
-        if ($request->filled('item')) {
-            $order_where_clause .= " AND item_bounds.item LIKE '%\"{$request->item}\"%'";
-        }
-        if ($request->filled('customer')) {
-            $order_where_clause .= " AND item_bounds.customer = '{$request->customer}'";
-        }
-        if ($request->filled('date_to') && $request->filled('date_from')) {
-            $date_from = date('Y-m-d', strtotime('-1 day', strtotime($request->date_from)));
-            $date_to = date('Y-m-d', strtotime('+1 day', strtotime($request->date_to)));
-            $order_where_clause .= " AND item_bounds.created_at BETWEEN '{$date_from}' AND '{$date_to}'";
+            $order_where_clause .= " AND item_bounds.order_number LIKE '%{$request->_search}%'";
         }
 
         if (!Helper::auth_is_admin()) {
@@ -118,6 +120,7 @@ class ItemBoundController extends Controller
             $order['unit_cost'] = Format::price($unit_cost);
             $order['order_number'] = '<a href="'.url('order').'/'.$order['id'].'" class="text-blue-600">'.$order['order_number'].'</a>';
             $order['customer'] = array_key_exists($customer_id, $customers) ? $customers[$customer_id]['name'] : $order['customer'];
+            $order['created_at'] = Format::toDate($order['created_at']);
             $carry[] = $order;
             return $carry;
         });
