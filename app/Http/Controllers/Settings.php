@@ -36,6 +36,13 @@ class Settings extends Controller
             $request->app_logo->storeAs('images', $fileName,'public');
             //$fileName = $request->app_logo->store('images', 'public');
             $this->settings->put('app_logo', $fileName);
+            if (env('APP_DEBUG')) {
+                dd('filename '.$fileName);
+            }
+        } else {
+            if (env('APP_DEBUG')) {
+                dd('No App logo');
+            }
         }
         $fields = $request->except(['_token', 'app_logo']);
         if(!empty($fields)){
