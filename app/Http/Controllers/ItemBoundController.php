@@ -518,10 +518,10 @@ class ItemBoundController extends Controller
             $where_clase .= !empty($where_clase) ? " AND" : "";
             $where_clase .= " item_bounds.created_at BETWEEN '{$date_from}' AND '{$date_to}'";
         }
-        // if ($request->has('customer') && !empty($request->customer)) {
-        //     $where_clase .= !empty($where_clase) ? " AND" : "";
-        //     $where_clase .= " `customer` = ".$request->customer;
-        // }
+        if ($request->has('customer') && !empty($request->customer)) {
+            $where_clase .= !empty($where_clase) ? " AND" : "";
+            $where_clase .= " `customer` = '{$request->customer}'";
+        }
 
         if ($request->has('type') && !empty($request->type)) {
             $where_clase .= !empty($where_clase) ? " AND" : "";
