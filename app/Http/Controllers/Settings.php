@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Spatie\Valuestore\Valuestore;
 
 class Settings extends Controller
@@ -14,13 +13,8 @@ class Settings extends Controller
         $this->settings = Valuestore::make(storage_path('app/settings.json'));
     }
     // Settings page
-    public function page(Request $request)
+    public function page()
     {
-        if ($request->has('debug')) {
-            $url = Storage::url('app/settings.json');
-            echo 'url '.$url;
-            dd($this->settings->all());
-        }
         return view('settings.settings', [
             'settings' => $this->settings->all()
         ]);
@@ -36,13 +30,6 @@ class Settings extends Controller
             $request->app_logo->storeAs('images', $fileName,'public');
             //$fileName = $request->app_logo->store('images', 'public');
             $this->settings->put('app_logo', $fileName);
-            if (env('APP_DEBUG')) {
-                dd('filename '.$fileName);
-            }
-        } else {
-            if (env('APP_DEBUG')) {
-                dd('No App logo');
-            }
         }
         $fields = $request->except(['_token', 'app_logo']);
         if(!empty($fields)){
