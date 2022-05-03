@@ -31,9 +31,9 @@
                 <div>
                     <a href="{{ url('dashboard') }}" class="text-lg font-semibold text-gray-100 no-underline">
                         @if (empty(App\Http\Controllers\Settings::get('app_logo')))
-                            <img src="{{ asset('img/logo.png') }}" alt="Inventory" class="max-w-[60px]">
+                            <img src="{{ asset('img/logo.png') }}" alt="Inventory settings" class="max-w-[60px]">
                         @else
-                            <img src="{{ Storage::url('images/'.App\Http\Controllers\Settings::get('app_logo')) }}" alt="Inventory" class="max-w-[60px]">
+                            <img src="{{ URL::to('images/'.App\Http\Controllers\Settings::get('app_logo')) }}" alt="Inventory storage" class="max-w-[60px]">
                         @endif                    
                     </a>
                 </div>
