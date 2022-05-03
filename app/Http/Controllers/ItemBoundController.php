@@ -516,12 +516,12 @@ class ItemBoundController extends Controller
             $date_from = date('Y-m-d', strtotime($request->date_from));
             $date_to = date('Y-m-d', strtotime('+1 day', strtotime($request->date_to)));
             $where_clase .= !empty($where_clase) ? " AND" : "";
-            $where_clase .= " item_bounds.created_at BETWEEN CAST('{$date_from}' as datetime) AND CAST('{$date_to}' as datetime)";
+            $where_clase .= " item_bounds.created_at BETWEEN '{$date_from}' AND '{$date_to}'";
         }
-        if ($request->has('customer') && !empty($request->customer)) {
-            $where_clase .= !empty($where_clase) ? " AND" : "";
-            $where_clase .= " `customer` = ".$request->customer;
-        }
+        // if ($request->has('customer') && !empty($request->customer)) {
+        //     $where_clase .= !empty($where_clase) ? " AND" : "";
+        //     $where_clase .= " `customer` = ".$request->customer;
+        // }
 
         if ($request->has('type') && !empty($request->type)) {
             $where_clase .= !empty($where_clase) ? " AND" : "";
