@@ -8,7 +8,7 @@
 	<h1 class="card-header uppercase">{{ __('Edit Order') }}</h1>
 	<div class="card-body">
 		<div>
-			{!! Form::open(['action'=>'App\Http\Controllers\ItemBoundController@update', 'method'=>'put']) !!}
+			{!! Form::open(['action'=>['App\Http\Controllers\ItemBoundController@update', $order['id']], 'method'=>'put']) !!}
 				<input type="hidden" name="type" value="{{ $type }}"/>
 				<div class="repeater">
 					<div data-repeater-list="items">

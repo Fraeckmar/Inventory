@@ -444,12 +444,11 @@ class ItemBoundController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update($id, Request $request)
     {
         $type = 'outbound';
         $fields = [
-            'item' => 'required',
-            'qty' => 'required|numeric',
+            'items' => 'required',
             'customer' => 'required|numeric'
         ];
         if ($request->has('customer')) {
