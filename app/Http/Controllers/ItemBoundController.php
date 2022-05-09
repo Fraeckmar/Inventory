@@ -444,8 +444,9 @@ class ItemBoundController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update($id, Request $request)
+    public function update(Request $request, $id)
     {
+        $error_messages = [];
         $type = 'outbound';
         $fields = [
             'items' => 'required',
@@ -456,32 +457,48 @@ class ItemBoundController extends Controller
         }
         $request->validate($fields);        
         $remarks = $request->has('remarks')? $request->remarks : '';
+        $order_items = Order::get_items($id);
+        $items = Order::get_items();
+        $unique_items = [];
+        foreach ($request->items as $order) {
+            $request_id = $order['item'];
+            $request_qty = $order['qty'];
+            $item = Item::find($request_id);
+            if ($request_qty <= 0) {
+                $error_messages[] = "The qty. field must have value";
+            }
+            if (in_array($request_id, $unique_items)) {
+                $error_messages[] = "Duplicate entry for '{$items[$request_id]['item']}'";
+            }
+            if ($item->balance < $request_qty) {
+                $error_messages[] = "The remaining balance of '{$items[$request_id]['item']}' is less than your request.";
+            }
+            $unique_items[] = $request_id;
+        }
 
-        // Get  prev Outbound Qty
-        
-        
+        if (!empty($error_messages)) {
+            return redirect("order/{$id}/edit")->with('errors_msg', $error_messages);    
+        }
 
-        // Save Inbound
+        foreach ($request->items as $order) {
+            $request_id = $order['item'];
+            $request_qty = $order['qty'];
+            $item = Item::find($request_id);
+            $prev_item_qty = array_key_exists($request_id, $order_items) ? $order_items[$request_id]['qty'] : 0;            
+            $diff_balance = $prev_item_qty - $request_qty;  
+            $new_item_bal = $item->balance + $diff_balance;
+            $item->balance = $new_item_bal;
+            $item->save();          
+        }
+
         $itemBound = ItemBound::find($id);
-        $outbound_prev_qty = $itemBound->qty;
-        $itemBound->item = $request->item;        
-        $itemBound->qty = $request->qty;
+        $itemBound = ItemBound::find($id);
+        $itemBound->item = serialize($request->items);       
         $itemBound->type = $type;
         $itemBound->customer = $request->customer;
         $itemBound->remarks = $remarks;
         $itemBound->updated_by = Auth::id();
         $itemBound->save();
-
-        // Update Item balance
-        $item = Item::find($request->item);
-        $new_balance = $outbound_prev_qty;
-        if ($outbound_prev_qty < $request->qty) {
-            $new_balance = $new_balance - ($request->qty - $outbound_prev_qty);
-        } else {
-            $new_balance = $new_balance + ($outbound_prev_qty - $request->qty);
-        }
-        $item->balance = $new_balance;
-        $item->save();
         return redirect('order/'.$id.'/edit')->with('success', 'Order update successfully!');
     }
 

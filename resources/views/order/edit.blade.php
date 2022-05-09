@@ -1,6 +1,11 @@
 @extends('dashboard.index')
 
 @section('content')
+@if (session('errors_msg'))
+	@foreach (session('errors_msg') as $error)
+		{{ GenField::notification($error, 'error') }}
+	@endforeach
+@endif
 @if(session('success'))
 	{{ GenField::notification(session('success'), 'success') }}
 @endif

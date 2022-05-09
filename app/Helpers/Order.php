@@ -19,13 +19,22 @@ class Order
         return $prefix.$order_number;
     }
 
-    static function get_items()
+    static function get_items($order_id=null)
     {
-        $items = Item::all()->toArray();
-        $items = array_reduce($items, function($carry, $item){
-            $carry[$item['id']] = $item;
-            return $carry;
-        });
+        $items = [];
+        if ($order_id) {
+            $order = ItemBound::find($order_id);
+            $items_data = unserialize($order->item);
+            foreach ($items_data as $item) {
+                $items[$item['item']] = $item;
+            }
+        } else {
+            $items = Item::all()->toArray();
+            $items = array_reduce($items, function($carry, $item){
+                $carry[$item['id']] = $item;
+                return $carry;
+            });
+        }        
         return $items;
     }
 
