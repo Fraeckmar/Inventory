@@ -16,4 +16,17 @@ class Helper
             return false;
         }
     }
+    public static function pdf_styles()
+    {
+        ob_start();
+        ?>
+        <style>
+            .table-border td{
+                border: 1px solid #000;
+                padding: 50px;
+            }
+        </style>
+        <?php
+        echo ob_get_clean();
+    }
 }

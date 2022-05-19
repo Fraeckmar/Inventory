@@ -2,20 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\Item;
 use App\Models\ItemBound;
 use App\Models\User;
-use Illuminate\Support\Facades\Response;
 use App\Datatable\Datatable;
-use Field;
 use App\Helpers\Order;
+use App\Http\Controllers\Settings;
 use Exception;
-use Faker\Core\Number;
 use Format;
 use Helper;
+use Field;
+use App\Helpers\Receipt;
 
 class ItemBoundController extends Controller
 {
@@ -181,7 +182,8 @@ class ItemBoundController extends Controller
             [
                 'action' => 'receipt',
                 'model' => 'order',
-                'class' => 'item-receipt',
+                'class' => 'order-receipt',
+                'extra' => 'data-id={id}'
             ],
         ];
 
@@ -234,7 +236,7 @@ class ItemBoundController extends Controller
             ];
         }
         
-        $dataTable = new Datatable('order');
+        $dataTable = new Datatable('orders');
         $dataTable->set_table_column_fields($tbl_column_fields);
         $dataTable->set_table_column_values($tbl_column_values);        
         $dataTable->set_table_filters($table_filters);
@@ -624,5 +626,10 @@ class ItemBoundController extends Controller
         }
         return redirect()->back()->with('error', __('No Result Found!'));
         
+    }
+
+    function generate_receipt($order_id) {
+        return Receipt::print_order($order_id);
+        die();
     }
 }

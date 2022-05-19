@@ -51,12 +51,14 @@ Route::resource('/items', ItemsController::class);
 Route::post('/items', [ItemsController::class, 'index']);
 Route::post('/store-item', [ItemsController::class, 'store']);
 // Orders
-Route::post('/order', [ItemBoundController::class, 'index']);
+Route::get('/orders', [ItemBoundController::class, 'index']);
+Route::post('/orders', [ItemBoundController::class, 'index']);
 Route::post('/store-order', [ItemBoundController::class, 'store']);
 Route::resource('/order', ItemBoundController::class);
 //Route::put('/update-order', [ItemBoundController::class, 'update']);
 Route::get('/inbound', [ItemBoundController::class, 'inbound']);
 Route::get('/outbound', [ItemBoundController::class, 'outbound']);
+Route::get('/order-receipt/{order_id}', [ItemBoundController::class, 'generate_receipt']);
 
 // Setting
 Route::get('/settings', [Settings::class, 'page']);

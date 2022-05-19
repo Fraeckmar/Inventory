@@ -38,7 +38,7 @@ class PageController extends Controller
                 'orders' => $orders
             ]);
         }
-        return redirect('/order');
+        return redirect('/orders');
     }
 
     // Customers

@@ -194,6 +194,8 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        // DOM PDF
+        Barryvdh\DomPDF\ServiceProvider::class,
 
     ],
 
@@ -252,6 +254,8 @@ return [
         // Laravel Form
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
+        // DOM PDF
+        'PDF' => Barryvdh\DomPDF\Facade::class,
 
     ],
 

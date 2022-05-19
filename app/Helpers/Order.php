@@ -19,23 +19,40 @@ class Order
         return $prefix.$order_number;
     }
 
+    static function get_customer($order_id)
+    {
+        $order = ItemBound::find($order_id);
+        $customer = User::find($order->customer)->toArray();
+        return $customer;
+    }
+
     static function get_items($order_id=null)
     {
-        $items = [];
+        $items = Item::all()->toArray();
+        $items = array_reduce($items, function($carry, $item){
+            $carry[$item['id']] = $item;
+            return $carry;
+        });
+        
+        $order_items = $items;
         if ($order_id) {
+            $order_items = [];
             $order = ItemBound::find($order_id);
             $items_data = unserialize($order->item);
             foreach ($items_data as $item) {
-                $items[$item['item']] = $item;
+                $order_items[$item['item']] = $item;
             }
-        } else {
-            $items = Item::all()->toArray();
-            $items = array_reduce($items, function($carry, $item){
-                $carry[$item['id']] = $item;
-                return $carry;
-            });
-        }        
-        return $items;
+        }
+
+        $item_prices = self::get_item_prices();
+        foreach ($order_items as $id => $item) {
+            $order_items[$id]['price'] = $item_prices[$id];
+            $order_items[$id]['item_cost'] = $item['qty'] * $item_prices[$id];
+            if ($order_id) {
+                $order_items[$id]['item_name'] = $items[$id]['item'];
+            }
+        }
+        return $order_items;
     }
 
     static function get_item_prices()
