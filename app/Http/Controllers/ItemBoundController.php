@@ -171,7 +171,7 @@ class ItemBoundController extends Controller
             [
                 'action' => 'edit',
                 'model' => 'order',
-                'url' => 'orders/{id}/edit?type={type}'
+                'url' => 'order/{id}/edit?type={type}'
             ],
             [
                 'action' => 'delete',
@@ -236,7 +236,7 @@ class ItemBoundController extends Controller
             ];
         }
         
-        $dataTable = new Datatable('orders');
+        $dataTable = new Datatable('order');
         $dataTable->set_table_column_fields($tbl_column_fields);
         $dataTable->set_table_column_values($tbl_column_values);        
         $dataTable->set_table_filters($table_filters);

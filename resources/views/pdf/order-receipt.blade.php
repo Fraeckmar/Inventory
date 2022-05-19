@@ -3,7 +3,7 @@
     <table width="100%" class="border">
         <tr>
             <td valign="top" id="company" class="border-r border-b p-2">
-                <table width="100%">
+                {{-- <table width="100%">
                     <tr>
                         <td valign="middle" width="20%">
                             <img src="{{ $data['logo'] }}" width="100%" height="auto"/>
@@ -12,10 +12,10 @@
                             <p class="h5 uppercase"><strong class="pl-2">{{ strtoupper($data['company']) }}</strong></p>
                         </td>
                     </tr>
-                </table>
+                </table> --}}
+                <p class="h5 uppercase"><strong class="pl-2">{{ strtoupper($data['company']) }}</strong></p>
                 <p>Brgy. San Nicolas, Oton, Iloilo, Philippines</p>
                 <p>{{ $data['contact_no'] }}</p>
-                {{ $data['logo'] }}
             </td>
             <td valign="middle" align="center" width="35%" id="order_number" class="border-b p-2">
                 <p class="mb-1">{{ __('Order No.') }}</p>
