@@ -20,7 +20,7 @@ class Receipt
         $pdf_options = $options->getAll();
         $paper_size = $options->pdf_sizes()['order'];
         $data = [
-            'logo' => public_path('images/').Settings::get('app_logo'),
+            'logo' => '/images/'.Settings::get('app_logo'),
             'company' => Settings::get('app_name'),
             'contact_no' => Settings::get('app_contact_no'),
             'piece_unit' => Settings::get('piece_unit'),
