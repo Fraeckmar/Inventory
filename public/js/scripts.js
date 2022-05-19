@@ -83,6 +83,7 @@ jQuery(document).ready(function($){
                 },
                 success:function(data) {
                     var data = JSON.parse(data);
+                    console.log(data);
                     download_file(data.url, data.fine_name);
                 }
             });
