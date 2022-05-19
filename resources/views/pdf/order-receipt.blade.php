@@ -15,6 +15,7 @@
                 </table>
                 <p>Brgy. San Nicolas, Oton, Iloilo, Philippines</p>
                 <p>{{ $data['contact_no'] }}</p>
+                {{ $data['logo'] }}
             </td>
             <td valign="middle" align="center" width="35%" id="order_number" class="border-b p-2">
                 <p class="mb-1">{{ __('Order No.') }}</p>
