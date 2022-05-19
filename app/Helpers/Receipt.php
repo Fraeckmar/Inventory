@@ -27,20 +27,21 @@ class Receipt
             'customer' => $customer
         ];
 
+        $strtime = strtotime(date('Y-m-d h:i'));
         $pdf = PDF::loadView('pdf.order-receipt',[
             'data' => $data
         ]);
         $pdf->setOptions($pdf_options);
         $pdf->setPaper($paper_size['size'], $paper_size['orient']);
-        $strtime = strtotime(date('Y-m-d h:i'));
-        $file_name = "order-receipt-{$order_id}-{$strtime}.pdf";
-        $file_path = public_path('pdf/'); 
-
-        $pdf->save($file_path . '/' . $file_name);
-        $file_url = public_path('pdf/'.$file_name);
-        return json_encode([
-            'url'=>$file_url,
-            'file_name' => $file_name
-        ]); 
+        return $pdf->download("order-receipt-{$order_id}-{$strtime}.pdf");
     }
 }
+
+// $path = public_path('pdf/'); 
+
+//         $pdf->save($path . '/' . $file_name);
+//         $file_url = public_path('pdf/'.$file_name);
+//         return json_encode([
+//             'url'=>$file_url,
+//             'file_name' => $file_name
+//         ]); 

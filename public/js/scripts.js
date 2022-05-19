@@ -20,8 +20,7 @@ jQuery(document).ready(function($){
             var save = document.createElement('a');
             save.href = fileURL;
             save.target = '_blank';
-            var filename = fileURL.substring(fileURL.lastIndexOf('/')+1);
-            save.download = fileName || filename;
+            save.download = fileName;
             if ( navigator.userAgent.toLowerCase().match(/(ipad|iphone|safari)/) && navigator.userAgent.search("Chrome") < 0) {
                     document.location = save.href; 
                 // window event not working here
@@ -73,21 +72,8 @@ jQuery(document).ready(function($){
     });
     // Order Receipt
     $('.order-receipt').on('click', function() {
-        console.log('order receipt');
         var order_id = $(this).data('id');
-        if (order_id) {
-            $.get({
-                url : '/order-receipt/'+order_id,
-                beforeSend:function() {
-                    console.log('before send');
-                },
-                success:function(data) {
-                    var data = JSON.parse(data);
-                    console.log(data);
-                    download_file(data.url, data.fine_name);
-                }
-            });
-        }
-        
+        var req_url = '/order-receipt/'+order_id;
+        download_file(req_url);        
     });
 });
