@@ -1,4 +1,4 @@
-jQuery(document).ready(function($){
+$(function($){
     // Repeater Scripts
     $('.repeater').repeater({
         show: function () {
@@ -43,6 +43,13 @@ jQuery(document).ready(function($){
         }
     }
 
+    function show_loading() {
+        $('body').append('<div class="spinner-loading">Loading...</div>');
+    }
+    function hide_loading() {
+        $('body').find('.spinner-loading').remove();
+    }
+
     $('#menu-toggle').on('click', function(){
         $('#mobile-menu-items').toggle('fast');
     });
@@ -72,8 +79,10 @@ jQuery(document).ready(function($){
     });
     // Order Receipt
     $('.order-receipt').on('click', function() {
+        show_loading();
         var order_id = $(this).data('id');
         var req_url = '/order-receipt/'+order_id;
-        download_file(req_url);        
+        download_file(req_url);
+        hide_loading();
     });
 });

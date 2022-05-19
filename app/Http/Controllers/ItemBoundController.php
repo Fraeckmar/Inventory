@@ -171,7 +171,7 @@ class ItemBoundController extends Controller
             [
                 'action' => 'edit',
                 'model' => 'order',
-                'url' => 'order/{id}/edit?type={type}'
+                'url' => 'orders/{id}/edit?type={type}'
             ],
             [
                 'action' => 'delete',

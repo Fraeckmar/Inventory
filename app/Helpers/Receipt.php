@@ -20,9 +20,12 @@ class Receipt
         $pdf_options = $options->getAll();
         $paper_size = $options->pdf_sizes()['order'];
         $data = [
+            'logo' => 'http://joyice.herokuapp.com/images/logo.png',//public_path('images/').Settings::get('app_logo'),
+            'company' => Settings::get('app_name'),
+            'contact_no' => Settings::get('app_contact_no'),
+            'piece_unit' => Settings::get('piece_unit'),
             'order_number' => $order->order_number,
             'styles' => $options->styles(),
-            'company' => Settings::get('app_name'),
             'items' => $items,
             'customer' => $customer
         ];
@@ -36,12 +39,3 @@ class Receipt
         return $pdf->download("order-receipt-{$order_id}-{$strtime}.pdf");
     }
 }
-
-// $path = public_path('pdf/'); 
-
-//         $pdf->save($path . '/' . $file_name);
-//         $file_url = public_path('pdf/'.$file_name);
-//         return json_encode([
-//             'url'=>$file_url,
-//             'file_name' => $file_name
-//         ]); 
