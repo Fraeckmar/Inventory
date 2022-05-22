@@ -10,8 +10,14 @@
     <title>{{ App\Http\Controllers\Settings::get('app_name') }}</title>
 
     {{-- Fav Icon --}}
-    <link rel="shortcut icon" href="{{ asset('img/logo.png') }}">
-    <link rel="icon" type="image/png" href="{{ asset('img/logo.png') }}">
+    @php
+        $com_logo = asset('img/logo.png');
+        if (!empty(App\Http\Controllers\Settings::get('app_logo'))) {
+            $com_logo = URL::to('images/'.App\Http\Controllers\Settings::get('app_logo'));
+        }
+    @endphp
+    <link rel="shortcut icon" href="{{ $com_logo }}">
+    <link rel="icon" type="image/png" href="{{ $com_logo }}">
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
@@ -30,11 +36,7 @@
             <div class="mx-auto flex justify-between items-center px-6 relative">
                 <div>
                     <a href="{{ url('dashboard') }}" class="text-lg font-semibold text-gray-100 no-underline">
-                        @if (empty(App\Http\Controllers\Settings::get('app_logo')))
-                            <img src="{{ asset('img/logo.png') }}" alt="Inventory settings" class="max-w-[60px]">
-                        @else
-                            <img src="{{ URL::to('images/'.App\Http\Controllers\Settings::get('app_logo')) }}" alt="Inventory storage" class="max-w-[60px]">
-                        @endif                    
+                        <img src="{{ $com_logo }}" alt="Inventory settings" class="max-w-[60px]">                  
                     </a>
                 </div>
                 <nav class="space-x-4 text-gray-300 text-sm sm:text-base">
@@ -90,7 +92,7 @@
             </div>            
         </div>
     </main>
-    @if (request()->is('reports')||request()->is('order')||request()->is('users')||request()->is('items'))
+    @if (request()->is('reports')||request()->is('orders')||request()->is('users')||request()->is('items'))
     <script src="{{ Helper::datepickerSrc() }}" defer></script>
     @endif
     <script src="{{ asset('js/scripts.js') }}" defer></script>
