@@ -42,14 +42,14 @@ class Order
             foreach ($items_data as $item) {
                 $order_items[$item['item']] = $item;
             }
-        }
-
-        $item_prices = self::get_item_prices();
-        foreach ($order_items as $id => $item) {
-            $order_items[$id]['price'] = $item_prices[$id];
-            $order_items[$id]['item_cost'] = $item['qty'] * $item_prices[$id];
-            if ($order_id) {
-                $order_items[$id]['item_name'] = $items[$id]['item'];
+            
+            $item_prices = self::get_item_prices();
+            foreach ($order_items as $id => $item) {
+                $order_items[$id]['price'] = $item_prices[$id];
+                $order_items[$id]['item_cost'] = $item['qty'] * $item_prices[$id];
+                if ($order_id) {
+                    $order_items[$id]['item_name'] = $items[$id]['item'];
+                }
             }
         }
         return $order_items;
