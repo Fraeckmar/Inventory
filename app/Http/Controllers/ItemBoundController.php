@@ -529,7 +529,7 @@ class ItemBoundController extends Controller
 
     function generate_report(Request $request)
     {
-        $where_clase = "";
+        $where_clase = "id IS NOT NULL";
         if ($request->filled('date_from') && $request->filled('date_to')) {
             $date_from = date('Y-m-d', strtotime($request->date_from));
             $date_to = date('Y-m-d', strtotime('+1 day', strtotime($request->date_to)));
@@ -551,7 +551,9 @@ class ItemBoundController extends Controller
             $carry[$customer['id']] = $customer['name'];
             return $carry;
         });
-        $item_bounds = ItemBound::whereRaw($where_clase)->get()->toArray();    
+
+        $item_bounds = ItemBound::whereRaw($where_clase)->get()->toArray();   
+        
         $csv_values = [];
         if (!empty($item_bounds)) {
             foreach ($item_bounds as $order) {

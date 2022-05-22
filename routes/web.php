@@ -38,28 +38,31 @@ Route::get('/register', [PageController::class, 'register']);
 Route::get('/login', [PageController::class, 'login']);
 Route::post('/login', [AuthController::class, 'login'])->name('login');;
 Route::post('/logout', [AuthController::class, 'logout']);
-// User
-Route::resource('/users', UserController::class);
-Route::post('/register', [UserController::class, 'store']);
-Route::get('/users', [PageController::class, 'customers']);
-Route::post('/users', [PageController::class, 'customers']);
-// Reports
-Route::get('/reports', [ItemBoundController::class, 'report']);
-Route::post('/generate-report', [ItemBoundController::class, 'generate_report']);
-// Items
-Route::resource('/items', ItemsController::class);
-Route::post('/items', [ItemsController::class, 'index']);
-Route::post('/store-item', [ItemsController::class, 'store']);
-// Orders
-Route::get('/orders', [ItemBoundController::class, 'index']);
-Route::post('/orders', [ItemBoundController::class, 'index']);
-Route::post('/store-order', [ItemBoundController::class, 'store']);
-Route::resource('/order', ItemBoundController::class);
-//Route::put('/update-order', [ItemBoundController::class, 'update']);
-Route::get('/inbound', [ItemBoundController::class, 'inbound']);
-Route::get('/outbound', [ItemBoundController::class, 'outbound']);
-Route::get('/order-receipt/{order_id}', [ItemBoundController::class, 'generate_receipt']);
 
-// Setting
-Route::get('/settings', [Settings::class, 'page']);
-Route::post('/save-settings', [Settings::class, 'save']);
+Route::group(['middleware' => ['auth']], function() {    
+    // User
+    Route::resource('/users', UserController::class);
+    Route::post('/register', [UserController::class, 'store']);
+    Route::get('/users', [PageController::class, 'customers']);
+    Route::post('/users', [PageController::class, 'customers']);
+    // Reports
+    Route::get('/reports', [ItemBoundController::class, 'report']);
+    Route::post('/generate-report', [ItemBoundController::class, 'generate_report']);
+    // Items
+    Route::resource('/items', ItemsController::class);
+    Route::post('/items', [ItemsController::class, 'index']);
+    Route::post('/store-item', [ItemsController::class, 'store']);
+    // Orders
+    Route::get('/orders', [ItemBoundController::class, 'index']);
+    Route::post('/orders', [ItemBoundController::class, 'index']);
+    Route::post('/store-order', [ItemBoundController::class, 'store']);
+    Route::resource('/order', ItemBoundController::class);
+    //Route::put('/update-order', [ItemBoundController::class, 'update']);
+    Route::get('/inbound', [ItemBoundController::class, 'inbound']);
+    Route::get('/outbound', [ItemBoundController::class, 'outbound']);
+    Route::get('/order-receipt/{order_id}', [ItemBoundController::class, 'generate_receipt']);
+
+    // Setting
+    Route::get('/settings', [Settings::class, 'page']);
+    Route::post('/save-settings', [Settings::class, 'save']);
+});
