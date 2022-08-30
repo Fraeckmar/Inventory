@@ -24,6 +24,7 @@ class PageController extends Controller
     // Dashboard
     public function dashboard( Request $request )
     {
+        // dd(Order::get_inbound_graphs());
     	if(!Auth::check()){
     		return redirect('/login');
     	}

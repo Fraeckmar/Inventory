@@ -1,4 +1,6 @@
 <?php
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class Field
 {
@@ -213,13 +215,18 @@ class Field
      */
     public static function customerRoles()
     {
-        return [
+        $roles = [
             'administrator' => __('Administrator'),
             // 'agent' => __('Agent'),
             'customer' => __('Customer'),
             // 'driver' => __('Driver'),
             // 'employee' => __('Employee')
         ];
+        $admin_user = User::where('role', 'administrator')->get()->first();
+        if (!Auth::check() && !empty($admin_user)) {
+            unset($roles['administrator']);
+        }
+        return $roles;
     }
 
     public static function itemBoundTypes()

@@ -230,6 +230,7 @@ class ItemsController extends Controller
             'balance' => 'required|numeric',
             'category' => 'required',
         ]);
+        
         $item = Item::find($id);
         $item->item = $request->item;
         $item->description  = $request->description;

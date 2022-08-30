@@ -13,6 +13,9 @@
 					$options = ($field['type'] == 'select' && !empty($categories))? $categories : [];
 					$field['value'] = $item->$key;
 					$field['options'] = $options;
+					if ($key == 'balance') {
+						$field['attributes'] = 'readonly';
+					}
 				@endphp
 				@error($key)
 					{{ GenField::notification($message, 'field', true) }}

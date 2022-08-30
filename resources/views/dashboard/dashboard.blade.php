@@ -1,7 +1,7 @@
 @extends('dashboard.index')
 @section('content')
 @php
-    //dd($revenue);
+    
 @endphp
 <div class="flex-1">
     <div class="flex flex-wrap">

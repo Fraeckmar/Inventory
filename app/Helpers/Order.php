@@ -6,6 +6,7 @@ use App\Models\ItemBound;
 use App\Models\Item;
 use App\Models\User;
 use Exception;
+use Illuminate\Support\Facades\DB;
 
 class Order
 {
@@ -53,6 +54,27 @@ class Order
             }
         }
         return $order_items;
+    }
+
+    static function get_inbound_graphs()
+    {
+        $inbounds = ItemBound::select("item")->where("type", "inbound")->get()->toArray();
+        $total_balance = 0;
+        if (!empty($inbounds)) {
+            foreach ($inbounds as $inbound) {
+                $items = unserialize($inbound['item']);
+                foreach ($items as $item) {
+                    $total_balance += $item['qty'];
+                }                
+            }
+        }  
+        DB::enableQueryLog();
+        $weekly = ItemBound::selectRaw('item as this_week')->whereRaw("extract(week from item_bounds.created_at) = '".abs(date('W'))."' AND item_bounds.type='inbound'")->get()->toArray();
+        $query = DB::getQueryLog();
+        print_r($weekly);
+        echo '</pre>';
+        die();
+        return $total_balance;    
     }
 
     static function get_item_prices()

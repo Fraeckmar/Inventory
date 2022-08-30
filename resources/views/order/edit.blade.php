@@ -9,8 +9,9 @@
 @if(session('success'))
 	{{ GenField::notification(session('success'), 'success') }}
 @endif
+<h3 class="mx-auto mt-4 w-full sm:w-full md:w-2/3 text-3xl font-semibold text-center mb-2 sm:mb-4 border border-2 border-gray-400 rounded py-2 px-6"><span class="">{{ $order['order_number'] }}</span></h3>
 <div class="card mx-auto mt-4 w-full sm:w-full md:w-2/3">
-	<h1 class="card-header uppercase">{{ __('Edit Order') }}</h1>
+	<h1 class="card-header">{{ __('Edit Order') }}</h1>
 	<div class="card-body">
 		<div>
 			{!! Form::open(['action'=>['App\Http\Controllers\ItemBoundController@update', $order['id']], 'method'=>'put']) !!}
@@ -47,7 +48,7 @@
 										'label' => '<i class="fa fa-minus"></i>',
 										'class' => 'w-full text-center py-3 rounded bg-red-600 text-white hover:bg-red-700 border border-red-500 cursor-pointer',
 										'container_class' => 'w-12 ml-3 mb-0',
-										'attribues' => 'data-repeater-delete'
+										'attributes' => 'data-repeater-delete'
 									]) }}
 								@endif
 								
@@ -63,7 +64,7 @@
 								'label' => '<i class="fa fa-plus"></i>',
 								'class' => 'w-full text-center py-3 rounded bg-blue-600 text-white hover:bg-blue-700 border border-blue-500 cursor-pointer',
 								'container_class' => 'w-12 ml-3 mt-1 mb-0',
-								'attribues' => 'data-repeater-create'
+								'attributes' => 'data-repeater-create'
 							]) }}
 						</div>
 					@endif

@@ -449,19 +449,18 @@ class ItemBoundController extends Controller
     public function update(Request $request, $id)
     {
         $error_messages = [];
-        $type = 'outbound';
         $fields = [
-            'items' => 'required',
-            'customer' => 'required|numeric'
+            'items' => 'required'
         ];
         if ($request->has('customer')) {
-            $fields['customer'] = 'required';
+            $fields['customer'] = 'required|numeric';
         }
         $request->validate($fields);        
         $remarks = $request->has('remarks')? $request->remarks : '';
         $order_items = Order::get_items($id);
         $items = Order::get_items();
         $unique_items = [];
+
         foreach ($request->items as $order) {
             $request_id = $order['item'];
             $request_qty = $order['qty'];
@@ -479,7 +478,7 @@ class ItemBoundController extends Controller
         }
 
         if (!empty($error_messages)) {
-            return redirect("order/{$id}/edit")->with('errors_msg', $error_messages);    
+            return redirect("order/{$id}/edit?type={$request->type}")->with('errors_msg', $error_messages);    
         }
 
         foreach ($request->items as $order) {
@@ -496,12 +495,12 @@ class ItemBoundController extends Controller
         $itemBound = ItemBound::find($id);
         $itemBound = ItemBound::find($id);
         $itemBound->item = serialize($request->items);       
-        $itemBound->type = $type;
+        $itemBound->type = $request->type;
         $itemBound->customer = $request->customer;
         $itemBound->remarks = $remarks;
         $itemBound->updated_by = Auth::id();
         $itemBound->save();
-        return redirect('order/'.$id.'/edit')->with('success', 'Order update successfully!');
+        return redirect("order/{$id}/edit?type={$request->type}")->with("success", "<strong>{$itemBound->order_number}</strong> update successfully!");
     }
 
     /**

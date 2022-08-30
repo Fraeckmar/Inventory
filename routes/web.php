@@ -38,11 +38,14 @@ Route::get('/register', [PageController::class, 'register']);
 Route::get('/login', [PageController::class, 'login']);
 Route::post('/login', [AuthController::class, 'login'])->name('login');;
 Route::post('/logout', [AuthController::class, 'logout']);
+Route::get('/chart', function(){
+    return view('chart.chart');
+});
 
+Route::post('/register', [UserController::class, 'store']);
 Route::group(['middleware' => ['auth']], function() {    
     // User
-    Route::resource('/users', UserController::class);
-    Route::post('/register', [UserController::class, 'store']);
+    Route::resource('/users', UserController::class);    
     Route::get('/users', [PageController::class, 'customers']);
     Route::post('/users', [PageController::class, 'customers']);
     // Reports
