@@ -29,4 +29,13 @@ class Helper
         <?php
         echo ob_get_clean();
     }
+
+    public static function getStartAndEndDate($format='m-d-Y') {
+        $dateTime = new DateTime();
+        $dateTime->setISODate(date('Y'), date('W'));
+        $result['start_date'] = $dateTime->format($format);
+        $dateTime->modify('+6 days');
+        $result['end_date'] = $dateTime->format($format);
+        return $result;
+    }
 }

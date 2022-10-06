@@ -28,4 +28,8 @@ class Format
         }
         return $unit;
     }
+    public static function date_format()
+    {
+        return 'Y-m-d';
+    }
 }

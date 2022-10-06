@@ -34,7 +34,7 @@ class ItemBoundController extends Controller
         return false;
     }
 
-    public function index(Request $request)
+    public function index(Request $request, $date_from=null, $date_to=null)
     {
         $selectize_customers = [];
         $selectize_items = [];
@@ -83,7 +83,10 @@ class ItemBoundController extends Controller
             if ($request->filled('customer')) {
                 $order_where_clause .= " AND item_bounds.customer = '{$request->customer}'";
             }
-            if ($request->filled('date_to') && $request->filled('date_from')) {
+            if (
+                $request->filled('date_to') && $request->filled('date_from') //||
+                //$date_from && $date_to && !$request->has('date_to') && !$request->has('date_from')
+            ) {
                 $date_from = date('Y-m-d', strtotime($request->date_from));
                 $date_to = date('Y-m-d', strtotime('+1 day', strtotime($request->date_to)));
                 $order_where_clause .= " AND item_bounds.created_at BETWEEN '{$date_from}' AND '{$date_to}'";

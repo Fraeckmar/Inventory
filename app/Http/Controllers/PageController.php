@@ -32,11 +32,13 @@ class PageController extends Controller
             $revenue = Order::get_order_summary();
             $orders = ItemBound::where('type', 'outbound')->orderBy("created_at")->get()->count();
             $customers = User::where('role', 'customer')->get()->count();
+            $week_dates = Helper::getStartAndEndDate('m/d/Y');
             $items  = Item::all()->count();
             return view('dashboard.dashboard', [
                 'revenue' => $revenue,
                 'customers' => $customers,
-                'orders' => $orders
+                'orders' => $orders,
+                'week_dates' => $week_dates
             ]);
         }
         return redirect('/orders');

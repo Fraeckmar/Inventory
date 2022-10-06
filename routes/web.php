@@ -56,7 +56,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/items', [ItemsController::class, 'index']);
     Route::post('/store-item', [ItemsController::class, 'store']);
     // Orders
-    Route::get('/orders', [ItemBoundController::class, 'index']);
+    Route::get('/orders/{from?}/{to?}', [ItemBoundController::class, 'index']);
     Route::post('/orders', [ItemBoundController::class, 'index']);
     Route::post('/store-order', [ItemBoundController::class, 'store']);
     Route::resource('/order', ItemBoundController::class);
