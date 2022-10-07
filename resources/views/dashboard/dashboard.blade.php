@@ -1,7 +1,7 @@
 @extends('dashboard.index')
 @section('content')
 @php
-    
+
 @endphp
 <div class="flex-1">
     <div class="flex flex-wrap">
@@ -100,6 +100,22 @@
                 </div>
             </a>
         </div>
+
+        {{-- Critical Stocks --}}
+        <h3 class="font-bold text-2xl uppercase p-6 w-full">{{ __('Critical Item(s)') }}</h3>
+        <div class="flex flex-wrap critical-items">
+            @forelse ( $critical_items as $item)
+                <div class="w-full md:w-60 item" data-canvas_id="critical-{{ $item['id'] }}" data-item_id="{{ $item['id'] }}" data-percentage="{{ $item['percentage'] }}" data-item_name="{{ $item['name'] }}" data-remaining="{{ $item['remaining'] }}">
+                    <canvas id="critical-{{ $item['id'] }}"></canvas>
+                </div>
+            @empty
+                <p class="text-bold">{{ __('All items are good.') }}</p>
+            @endforelse
+        </div>        
     </div>
 </div>
+@endsection
+@section('footer_script')
+    <script src="{{ asset('js/chart/chart.min.js') }}" defer></script>
+    <script src="{{ asset('js/chart/chartjs-plugin-doughnutlabel.min.js') }}" defer></script>
 @endsection

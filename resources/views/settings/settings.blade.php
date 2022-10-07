@@ -94,6 +94,15 @@
                         <p class="text-red-500 m-0">{{ $message }}</p>
                     @enderror
                 </div>
+                <div class="mb-3">
+                    <label for="critical_when" class="text-sm font-medium text-gray-900 block dark:text-gray-300 my-2">{{ __('Item is critical when ') }} ({{ $settings['piece_unit'] ?? __('pcs') }}) left.</label>
+                    <input 
+                        type="text"
+                        name="critical_when" 
+                        id="piece_unit"  
+                        class="bg-gray-50 border border-gray-300 sm:text-sm rounded-md block w-full p-2.5"
+                        value="{{ $settings['critical_when'] ?? 100 }}"/>
+                </div>
             </div>
         </div>
         <div class="card mb-4">

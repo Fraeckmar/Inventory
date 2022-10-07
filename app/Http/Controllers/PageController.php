@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Settings;
 use App\Datatable\Datatable;
 use App\Models\Item;
 use App\Models\ItemBound;
@@ -33,12 +34,14 @@ class PageController extends Controller
             $orders = ItemBound::where('type', 'outbound')->orderBy("created_at")->get()->count();
             $customers = User::where('role', 'customer')->get()->count();
             $week_dates = Helper::getStartAndEndDate('m/d/Y');
-            $items  = Item::all()->count();
+            $critical_items = Order::getCriticalItems();
+
             return view('dashboard.dashboard', [
                 'revenue' => $revenue,
                 'customers' => $customers,
                 'orders' => $orders,
-                'week_dates' => $week_dates
+                'week_dates' => $week_dates,
+                'critical_items' => $critical_items
             ]);
         }
         return redirect('/orders');

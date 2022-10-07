@@ -95,9 +95,9 @@
     @if (request()->is('reports')||request()->is('orders')||request()->is('users')||request()->is('items'))
     <script src="{{ Helper::datepickerSrc() }}" defer></script>
     @endif
-    <script src="{{ asset('js/scripts.js') }}" defer></script>
     <script src="{{ asset('selectize/js/selectize.min.js') }}" defer></script>
     <script src="{{ asset('selectize/js/selectize-helper.js') }}" defer></script>
     @yield('footer_script')
+    <script src="{{ asset('js/scripts.js') }}" defer></script>
 </body>
 </html>

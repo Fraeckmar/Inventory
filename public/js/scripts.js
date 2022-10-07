@@ -85,4 +85,70 @@ $(function($){
         download_file(req_url);
         hide_loading();
     });
+
+    // ANALYSIS
+    $('.critical-items .item').each(function(){
+        let canvas_id = $(this).data('canvas_id');
+        let item_name = $(this).data('item_name');
+        let item_percentage = $(this).data('percentage');
+        let remaining = $(this).data('remaining');
+
+        let labels = [
+            item_name,
+            ''
+        ];
+
+        let data = {
+        labels: labels,
+            datasets: [{
+                label: 'Critical Item',
+                backgroundColor: [
+                    '#e02424',
+                    'transparent'
+                ],
+                borderColor: [
+                    'transparent',
+                    '#fcdbdb'
+                ],
+                borderWidth: 2,
+                data: [item_percentage, 100],
+            }]
+        };
+
+        let config = {
+            type: 'doughnut',
+            data: data,
+            options: {
+                cutoutPercentage: 70,
+                responsive: true,
+                legend: {
+                    display: false
+                },
+                plugins: {
+                    doughnutlabel: {
+                        labels: [
+                            {
+                                text: item_name,
+                                font: {
+                                    size: 25,
+                                    weight: 'bold'
+                                }
+                            }, 
+                            {
+                                text: item_percentage+'%',
+                                font: {
+                                    size: 20
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        };
+
+        let criticalChart = new Chart(
+            document.getElementById(canvas_id),
+            config
+        );
+    });
 });

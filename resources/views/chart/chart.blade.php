@@ -1,8 +1,13 @@
-<div>
-    <canvas id="myChart"></canvas>
+
+<canvas id="canvas" height="300" width="300"></canvas>
+<div id="stocks-wrap" style="position: relative; height:500px; width:500px">
+  <canvas id="stocks" height="300" width="300"></canvas>
 </div>
-<script src="{{ asset('js/chart.min.js') }}"></script>
+
+<script src="{{ asset('js/chart/chart.min.js') }}"></script>
+<script src="{{ asset('js/chart/chartjs-plugin-doughnutlabel.min.js') }}"></script>
 <script>
+
     const labels = [
       'WEEK 1',
       'WEEK 2',
@@ -36,8 +41,54 @@
       }
     };
 
+    const stock_label = [
+      'INBOUND',
+      'OUTBOUND'
+    ];
+    const stock_data = {
+      labels : stock_label,
+      datasets: [{
+        label: 'ITEM 1',
+        backgroundColor: [
+          '#ffd9b3',
+          '#ccff66'
+        ],
+        data: [30, 70]
+      }]
+    };
+    const stock_config = {
+      type: 'doughnut',
+      data: stock_data,
+      options: {
+        cutoutPercentage: 80,
+        responsive: true,
+        plugins: {          
+          // datalabels: {
+          //   display: true,
+          //   backgroundColor: '#ccc',
+          //   borderRadius: 3,
+          //   font: {
+          //     color: 'red',
+          //     weight: 'bold',
+          //   }
+          // },
+          doughnutlabel: {
+            labels: [{
+              text: '550',
+              font: {
+                size: 20,
+                weight: 'bold'
+              }
+            }, {
+              text: 'total'
+            }]
+          }
+        }
+      }
+    };
+
     const myChart = new Chart(
-        document.getElementById('myChart'),
-        config
+        document.getElementById('stocks'),
+        stock_config
     );
   </script>

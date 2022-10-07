@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Http\Controllers\Settings;
 use App\Models\ItemBound;
 use App\Models\Item;
 use App\Models\User;
@@ -149,5 +150,49 @@ class Order
             'total' => $total
         ];
         return $summary;
+    }
+
+    public static function getItemBoundsByItemID($item_id, $type='')
+    {
+        $item1 = str_replace('}', '', str_replace('a:1:', '', serialize(['item' => $item_id])));
+        $item2 = str_replace('}', '', str_replace('a:1:', '', serialize(['item' => "{$item_id}"])));
+        $add_where = !empty($type) ? " AND type = '{$type}'" : "";
+
+        $items_bounds = ItemBound::whereRaw("(item LIKE '%{$item1}%' OR item LIKE '%{$item2}%') {$add_where} ORDER BY id")->get()->toArray();
+        
+        $inbound_data = [];
+        if (!empty($items_bounds)) {
+            foreach ($items_bounds as $inbound) {
+                $inbound_item = unserialize($inbound['item']);
+                if (array_key_exists('item', $inbound_item[0]) && $inbound_item[0]['item'] == $item_id) {
+                    $inbound_data = $inbound_item[0];
+                }
+            }
+        }
+        return $inbound_data;
+    }
+
+    public static function getCriticalItems()
+    {
+        $items = Item::all();
+        $items_chart = [];
+        if (!empty($items)) {
+            foreach ($items as $item) {
+                $inbound = self::getItemBoundsByItemID($item->id, 'inbound');
+                $inbound_qty = !empty($inbound) ? $inbound['qty'] : 0;
+                if ($inbound_qty) {
+                    $balance_percentage = round(($item->balance/$inbound_qty) * 100);
+                    if ($balance_percentage <= 15) {
+                        $items_chart[$item->id] = [
+                            'id' => $item->id,
+                            'name' => $item->item,
+                            'percentage' => $balance_percentage,
+                            'remaining' => $item->balance
+                        ];
+                    }
+                }
+            }
+        }
+        return $items_chart;
     }
 }
