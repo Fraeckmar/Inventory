@@ -120,24 +120,23 @@ $(function($){
             data: data,
             options: {
                 cutoutPercentage: 70,
-                responsive: true,
+                responsive: false,
                 legend: {
                     display: false
+                },
+                title: {
+                    display: true,
+                    text: item_name,
+                    fontSize: 20,
                 },
                 plugins: {
                     doughnutlabel: {
                         labels: [
                             {
-                                text: item_name,
+                                text: item_percentage+'%',
                                 font: {
                                     size: 25,
                                     weight: 'bold'
-                                }
-                            }, 
-                            {
-                                text: item_percentage+'%',
-                                font: {
-                                    size: 20
                                 }
                             }
                         ]

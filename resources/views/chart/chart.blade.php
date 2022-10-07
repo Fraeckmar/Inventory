@@ -62,7 +62,13 @@
       options: {
         cutoutPercentage: 80,
         responsive: true,
-        plugins: {          
+        title: {
+            display: true,
+            text: 'my Title',
+            fontSize: 40,
+        },
+        plugins: {      
+              
           // datalabels: {
           //   display: true,
           //   backgroundColor: '#ccc',
