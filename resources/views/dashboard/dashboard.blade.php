@@ -103,13 +103,13 @@
 
         {{-- Critical Stocks --}}
         <h3 class="font-bold text-2xl uppercase p-6 w-full">{{ __('Critical Item(s)') }}</h3>
-        <div class="flex flex-wrap critical-items">
+        <div class="flex flex-wrap critical-items px-6">
             @forelse ( $critical_items as $item)
                 <div class="w-full md:w-60 item" data-canvas_id="critical-{{ $item['id'] }}" data-item_id="{{ $item['id'] }}" data-percentage="{{ $item['percentage'] }}" data-item_name="{{ $item['name'] }}" data-remaining="{{ $item['remaining'] }}">
                     <canvas id="critical-{{ $item['id'] }}"></canvas>
                 </div>
             @empty
-                <p class="text-bold">{{ __('All items are good.') }}</p>
+                <span class="text-bold text-xl bg-green-200 px-2 py-1 rounded-md">{{ __('All items are good.') }}</span>
             @endforelse
         </div>        
     </div>

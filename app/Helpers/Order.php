@@ -182,7 +182,7 @@ class Order
                 $inbound_qty = !empty($inbound) ? $inbound['qty'] : 0;
                 if ($inbound_qty) {
                     $balance_percentage = round(($item->balance/$inbound_qty) * 100);
-                    if ($balance_percentage <= 15) {
+                    if ($balance_percentage <= 20) {
                         $items_chart[$item->id] = [
                             'id' => $item->id,
                             'name' => $item->item,
