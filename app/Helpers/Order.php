@@ -88,6 +88,21 @@ class Order
         return $items;
     }
 
+    public static function getBoundsOfYear($select='item',$type='outbound')
+    {
+        return ItemBound::select($select)->whereRaw("extract(year from item_bounds.created_at) = '".date('Y')."' AND item_bounds.type='{$type}'")->get()->toArray();
+    }
+
+    public static function getBoundsOfMonth($select='item', $type='outbound')
+    {
+        return ItemBound::select($select)->whereRaw("extract(month from item_bounds.created_at) = '".date('m')."' AND item_bounds.type='{$type}'")->get()->toArray();
+    }
+
+    public static function getBoundsOfWeek($select='item', $type='outbound')
+    {
+        return ItemBound::select($select)->whereRaw("extract(week from item_bounds.created_at) = '".abs(date('W'))."' AND item_bounds.type='{$type}'")->get()->toArray();
+    }
+
     static function get_order_summary()
     {        
         $items = self::get_item_prices();
@@ -103,7 +118,7 @@ class Order
             return $carry;
         });
 
-        $weekly = ItemBound::select('item')->whereRaw("extract(week from item_bounds.created_at) = '".abs(date('W'))."' AND item_bounds.type='outbound'")->get()->toArray();
+        $weekly = self::getBoundsOfWeek();
         $weekly = array_reduce($weekly, function($carry, $order) use($items){
             $orders = unserialize($order['item']);
             foreach ($orders as $order_item) {
@@ -115,7 +130,7 @@ class Order
             return $carry;
         });
 
-        $monthly = ItemBound::select('item')->whereRaw("extract(month from item_bounds.created_at) = '".date('m')."' AND item_bounds.type='outbound'")->get()->toArray();
+        $monthly = self::getBoundsOfMonth();
         $monthly = array_reduce($monthly, function($carry, $order) use($items){
             $orders = unserialize($order['item']);
             foreach ($orders as $order_item) {
@@ -159,7 +174,6 @@ class Order
         $add_where = !empty($type) ? " AND type = '{$type}'" : "";
 
         $items_bounds = ItemBound::whereRaw("(item LIKE '%{$item1}%' OR item LIKE '%{$item2}%') {$add_where} ORDER BY id")->get()->toArray();
-        
         $inbound_data = [];
         if (!empty($items_bounds)) {
             foreach ($items_bounds as $inbound) {
@@ -170,6 +184,51 @@ class Order
             }
         }
         return $inbound_data;
+    }
+
+    public static function getGraphItems()
+    {
+        
+        $yearly_bounds = ItemBound::orderBy('created_at')->get()->toArray();
+        $monthly_bounds = self::getBoundsOfYear(['item', 'created_at', 'type'],"inbound");
+        $graph_data = ['monthly'=>[], 'yearly'=>[]];
+
+        if (!empty($monthly_bounds)) {
+            foreach ($monthly_bounds as $bound) {
+                $month = date('F', strtotime($bound['created_at']));
+                $items = !empty($bound['item']) ? unserialize($bound['item']) : [];
+                if (!empty($items)) {
+                    foreach ($items as $item) {    
+                        if ($item['qty']) {
+                            if (array_key_exists($month, $graph_data['monthly']) && array_key_exists($bound['type'], $graph_data['monthly'][$month])) {
+                                $graph_data['monthly'][$month][$bound['type']] += $item['qty'];                          
+                            } else {
+                                $graph_data['monthly'][$month][$bound['type']] = $item['qty']; 
+                            }
+                        }
+                    }
+                }               
+            }
+        }
+
+        if (!empty($yearly_bounds)) {
+            foreach ($yearly_bounds as $bound) {
+                $year = date('Y', strtotime($bound['created_at']));
+                $items = !empty($bound['item']) ? unserialize($bound['item']) : [];
+                if (!empty($items)) {
+                    foreach ($items as $item) {    
+                        if ($item['qty']) {
+                            if (array_key_exists($year, $graph_data['yearly']) && array_key_exists($bound['type'], $graph_data['yearly'][$year])) { 
+                                $graph_data['yearly'][$year][$bound['type']] += $item['qty'];                        
+                            } else {
+                                $graph_data['yearly'][$year][$bound['type']] = $item['qty'];
+                            }
+                        }
+                    }
+                }               
+            }
+        }
+        return $graph_data;          
     }
 
     public static function getCriticalItems()

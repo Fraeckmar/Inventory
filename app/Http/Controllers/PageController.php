@@ -35,13 +35,15 @@ class PageController extends Controller
             $customers = User::where('role', 'customer')->get()->count();
             $week_dates = Helper::getStartAndEndDate('m/d/Y');
             $critical_items = Order::getCriticalItems();
+            $graph_data = Order::getGraphItems();
 
             return view('dashboard.dashboard', [
                 'revenue' => $revenue,
                 'customers' => $customers,
                 'orders' => $orders,
                 'week_dates' => $week_dates,
-                'critical_items' => $critical_items
+                'critical_items' => $critical_items,
+                'graph_data' => $graph_data
             ]);
         }
         return redirect('/orders');

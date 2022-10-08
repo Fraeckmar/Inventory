@@ -107,10 +107,10 @@ $(function($){
                     'transparent'
                 ],
                 borderColor: [
-                    'transparent',
-                    '#fcdbdb'
+                    '#FF7B67',
+                    '#FF7B67'
                 ],
-                borderWidth: 2,
+                borderWidth: 1,
                 data: [item_percentage, 100],
             }]
         };

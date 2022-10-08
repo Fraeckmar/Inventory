@@ -16,27 +16,27 @@
     ];
   
     const data = {
-      labels: labels,
-      datasets: [{
-        label: 'My First dataset',
-        backgroundColor: 'rgb(255, 99, 132)',
-        borderColor: 'rgb(255, 99, 132)',
-        data: [35, 15, 45, 60, 100],
-      }]
+      labels: ["1900", "1950", "1999", "2050"],
+      datasets: [
+        {
+          label: "Africa",
+          backgroundColor: "#3e95cd",
+          data: [133,221,783,2478]
+        }, {
+          label: "Europe",
+          backgroundColor: "#8e5ea2",
+          data: [408,547,675,734]
+        }
+      ]
     };
   
     const config = {
       type: 'bar',
       data: data,
       options: {
-        plugins: {
-            title: {
-                display: true,
-                text: 'my Title'
-            },
-            legend: {
-                display: false
-            },
+        title: {
+          display: true,
+          text: 'Population growth (millions)'
         }
       }
     };
@@ -95,6 +95,6 @@
 
     const myChart = new Chart(
         document.getElementById('stocks'),
-        stock_config
+        config
     );
   </script>
