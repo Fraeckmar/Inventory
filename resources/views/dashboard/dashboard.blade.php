@@ -139,11 +139,11 @@
                     datasets: [
                         {
                             label: "In Bound",
-                            backgroundColor: "#3e95cd",
+                            backgroundColor: "#CDDBFE",
                             data: []
                         }, {
                             label: "Out Bound",
-                            backgroundColor: "#8e5ea2",
+                            backgroundColor: "#5850ec",
                             data: []
                         }
                     ]
@@ -154,11 +154,11 @@
                     datasets: [
                         {
                             label: "In Bound",
-                            backgroundColor: "#3e95cd",
+                            backgroundColor: "#CDDBFE",
                             data: []
                         }, {
                             label: "Out Bound",
-                            backgroundColor: "#8e5ea2",
+                            backgroundColor: "#5850ec",
                             data: []
                         }
                     ]
