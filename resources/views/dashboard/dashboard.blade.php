@@ -176,9 +176,11 @@
                     let inbound = value['inbound'] ?? 0;
                     let outbound = value['outbound'] ?? 0;
                     y_data['labels'].push(year);
-                    y_data['datasets'][0]['data'].push(inbound);
-                    y_data['datasets'][1]['data'].push(outbound);
+                    y_data['datasets'][0].data = [inbound];
+                    y_data['datasets'][1].data = [outbound];
                 });
+
+                console.log(y_data);
 
                 const m_config = {
                     type: 'bar',

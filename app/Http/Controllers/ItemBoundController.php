@@ -243,6 +243,7 @@ class ItemBoundController extends Controller
         $dataTable->set_table_column_fields($tbl_column_fields);
         $dataTable->set_table_column_values($tbl_column_values);        
         $dataTable->set_table_filters($table_filters);
+        $dataTable->set_action_model('order');
         if (Helper::auth_is_admin()) {
             $dataTable->set_table_actions($tbl_actions);
             $dataTable->set_action_variables($action_variables);

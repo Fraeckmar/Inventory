@@ -119,7 +119,7 @@ $(function($){
             type: 'doughnut',
             data: data,
             options: {
-                cutoutPercentage: 70,
+                cutoutPercentage: 80,
                 responsive: false,
                 legend: {
                     display: false

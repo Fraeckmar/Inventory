@@ -88,19 +88,31 @@ class Order
         return $items;
     }
 
-    public static function getBoundsOfYear($select='item',$type='outbound')
+    public static function getBoundsOfYear($type='', $select='item')
     {
-        return ItemBound::select($select)->whereRaw("extract(year from item_bounds.created_at) = '".date('Y')."' AND item_bounds.type='{$type}'")->get()->toArray();
+        $add_where = "";
+        if (!empty($type)) {
+            $add_where = "  AND item_bounds.type='{$type}'";
+        }
+        return ItemBound::select($select)->whereRaw("extract(year from item_bounds.created_at) = '".date('Y')."' {$add_where}")->get()->toArray();
     }
 
-    public static function getBoundsOfMonth($select='item', $type='outbound')
+    public static function getBoundsOfMonth($type='', $select='item')
     {
-        return ItemBound::select($select)->whereRaw("extract(month from item_bounds.created_at) = '".date('m')."' AND item_bounds.type='{$type}'")->get()->toArray();
+        $add_where = "";
+        if (!empty($type)) {
+            $add_where = "  AND item_bounds.type='{$type}'";
+        }
+        return ItemBound::select($select)->whereRaw("extract(month from item_bounds.created_at) = '".date('m')."' {$add_where}")->get()->toArray();
     }
 
-    public static function getBoundsOfWeek($select='item', $type='outbound')
+    public static function getBoundsOfWeek($type='', $select='item')
     {
-        return ItemBound::select($select)->whereRaw("extract(week from item_bounds.created_at) = '".abs(date('W'))."' AND item_bounds.type='{$type}'")->get()->toArray();
+        $add_where = "";
+        if (!empty($type)) {
+            $add_where = "  AND item_bounds.type='{$type}'";
+        }
+        return ItemBound::select($select)->whereRaw("extract(week from item_bounds.created_at) = '".abs(date('W'))."' {$add_where}")->get()->toArray();
     }
 
     static function get_order_summary()
@@ -118,7 +130,7 @@ class Order
             return $carry;
         });
 
-        $weekly = self::getBoundsOfWeek();
+        $weekly = self::getBoundsOfWeek('inbound');
         $weekly = array_reduce($weekly, function($carry, $order) use($items){
             $orders = unserialize($order['item']);
             foreach ($orders as $order_item) {
@@ -130,7 +142,7 @@ class Order
             return $carry;
         });
 
-        $monthly = self::getBoundsOfMonth();
+        $monthly = self::getBoundsOfMonth('inbound');
         $monthly = array_reduce($monthly, function($carry, $order) use($items){
             $orders = unserialize($order['item']);
             foreach ($orders as $order_item) {
@@ -190,7 +202,7 @@ class Order
     {
         
         $yearly_bounds = ItemBound::orderBy('created_at')->get()->toArray();
-        $monthly_bounds = self::getBoundsOfYear(['item', 'created_at', 'type'],"inbound");
+        $monthly_bounds = self::getBoundsOfYear('', ['item', 'created_at', 'type']);
         $graph_data = ['monthly'=>[], 'yearly'=>[]];
 
         if (!empty($monthly_bounds)) {

@@ -7,6 +7,7 @@ use App\Helpers\Page;
 class Datatable {
 
     private $model = '';
+    private $action_model = '';
     private $table_actions = [];
     private $table_column_fields = [];
     private $table_column_values = [];
@@ -26,9 +27,13 @@ class Datatable {
     function __construct($model)
     {
         $this->model = $model;
+        $this->action_model = $model;
         $this->search_placeholder = 'Search '.ucwords($model).'..';
     }
-
+    function set_action_model($model)
+    {
+        $this->action_model = $model;
+    }
     function set_table_filters($filters)
     {
         $this->table_filters = $filters;
@@ -229,7 +234,7 @@ class Datatable {
                                     $action_html .= '<i class="cursor-pointer '.$this->action_icon_classes[$icon_class_key].'"></i>'.$action_label;
                                 $action_html .= '</a>';  
                                 if ($action == 'delete') {
-                                    $html .= '<form id="delete-'.$this->model.$column_value['id'].'" class="hidden" action="'.url($this->model).'/'.$column_value['id'].'" method="POST">';
+                                    $html .= '<form id="delete-'.$this->action_model.$column_value['id'].'" class="hidden" action="'.url($this->action_model).'/'.$column_value['id'].'" method="POST">';
                                         $html .= csrf_field();			            		
                                         $html .= '<input type="hidden" name="_method" value="DELETE">';
                                     $html .= '</form>';

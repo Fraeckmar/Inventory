@@ -16,19 +16,21 @@
     ];
   
     const data = {
-      labels: ["1900", "1950", "1999", "2050"],
+      labels: ["2020"],
       datasets: [
         {
-          label: "Africa",
+          label: "In Bound",
           backgroundColor: "#3e95cd",
-          data: [133,221,783,2478]
+          data: [160]
         }, {
-          label: "Europe",
+          label: "Out Bound",
           backgroundColor: "#8e5ea2",
-          data: [408,547,675,734]
+          data: [200]
         }
       ]
     };
+
+    console.log(data);
   
     const config = {
       type: 'bar',
