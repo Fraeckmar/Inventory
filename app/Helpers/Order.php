@@ -130,7 +130,7 @@ class Order
             return $carry;
         });
 
-        $weekly = self::getBoundsOfWeek('inbound');
+        $weekly = self::getBoundsOfWeek('outbound');
         $weekly = array_reduce($weekly, function($carry, $order) use($items){
             $orders = unserialize($order['item']);
             foreach ($orders as $order_item) {
@@ -142,7 +142,7 @@ class Order
             return $carry;
         });
 
-        $monthly = self::getBoundsOfMonth('inbound');
+        $monthly = self::getBoundsOfMonth('outbound');
         $monthly = array_reduce($monthly, function($carry, $order) use($items){
             $orders = unserialize($order['item']);
             foreach ($orders as $order_item) {
